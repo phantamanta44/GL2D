@@ -58,6 +58,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.googlecode.mavennatives</groupId>
+                <artifactId>maven-nativedependencies-plugin</artifactId>
+                <version>0.0.7</version>
+                <executions>
+                    <execution>
+                        <id>unpacknatives</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -65,13 +79,17 @@
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
-            <version>3.0.0b</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-platform</artifactId>
-            <version>3.0.0b</version>
-            <classifier>natives-${lwjgl.nativeos}</classifier>
+            <artifactId>lwjgl-opengl</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-glfw</artifactId>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.l33tlabs.twl</groupId>
@@ -79,40 +97,4 @@
             <version>1.0</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>Windows</id>
-            <activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-            <properties>
-                <lwjgl.nativeos>windows</lwjgl.nativeos>
-            </properties>
-        </profile>
-        <profile>
-            <id>OSX</id>
-            <activation>
-                <os>
-                    <family>Mac</family>
-                </os>
-            </activation>
-            <properties>
-                <lwjgl.nativeos>osx</lwjgl.nativeos>
-            </properties>
-        </profile>
-        <profile>
-            <id>Linux</id>
-            <activation>
-                <os>
-                    <family>Unix</family>
-                </os>
-            </activation>
-            <properties>
-                <lwjgl.nativeos>linux</lwjgl.nativeos>
-            </properties>
-        </profile>
-    </profiles>
 </project>

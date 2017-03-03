@@ -1,6 +1,6 @@
-package io.github.phantamanta44.gl2d.window;
+package io.github.phantamanta44.shlgl.window;
 
-import io.github.phantamanta44.gl2d.model.IHandled;
+import io.github.phantamanta44.shlgl.model.IHandled;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 

@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.phantamanta44.gl2d</groupId>
-    <artifactId>GL2D</artifactId>
+    <groupId>io.github.phantamanta44.shlgl</groupId>
+    <artifactId>SHLGL</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>GL2D</name>
-    <description>2D OpenGL-based graphics library</description>
-    <url>https://github.com/phantamanta44/GL2D</url>
+    <name>SHLGL</name>
+    <description>Slightly higher-level game library</description>
+    <url>https://github.com/phantamanta44/SHLGL</url>
 
     <licenses>
         <license>
@@ -21,8 +21,8 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/phantamanta44/GL2D</url>
-        <connection>scm:git:git@github.com:phantamanta44/GL2D.git</connection>
+        <url>https://github.com/phantamanta44/SHLGL</url>
+        <connection>scm:git:git@github.com:phantamanta44/SHLGL.git</connection>
     </scm>
 
     <developers>

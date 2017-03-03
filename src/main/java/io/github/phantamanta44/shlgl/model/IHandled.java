@@ -1,4 +1,4 @@
-package io.github.phantamanta44.gl2d.model;
+package io.github.phantamanta44.shlgl.model;
 
 /**
  * An object with a handle.

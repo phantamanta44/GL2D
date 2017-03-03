@@ -1,35 +1,35 @@
-package io.github.phantamanta44.gl2d;
+package io.github.phantamanta44.shlgl;
 
-import io.github.phantamanta44.gl2d.window.Window;
+import io.github.phantamanta44.shlgl.window.Window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryUtil;
 
 /**
- * The main API entry point for GL2D.
+ * The main API entry point for SHLGL.
  * @author Evan Geng
  */
-public class GL2D {
+public class SHLGL {
 
     /**
-     * The singleton instance of GL2D.
+     * The singleton instance of SHLGL.
      */
-    private static GL2D INSTANCE;
+    private static SHLGL INSTANCE;
 
     /**
-     * Retrieves the singleton instance of GL2D.
+     * Retrieves the singleton instance of SHLGL.
      * @return The instance.
      */
-    public static GL2D getInstance() {
+    public static SHLGL getInstance() {
         if (INSTANCE == null)
-            INSTANCE = new GL2D();
+            INSTANCE = new SHLGL();
         return INSTANCE;
     }
 
     /**
      * Initializes GLFW.
      */
-    private GL2D() {
+    private SHLGL() {
         GLFWErrorCallback.createPrint(System.err).set();
         if (!GLFW.glfwInit())
             throw new IllegalStateException("Could not initialize GLFW!");

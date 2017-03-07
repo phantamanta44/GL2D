@@ -56,6 +56,16 @@ public class Window implements IHandled {
             posX = x;
             posY = y;
         });
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer x = stack.mallocInt(1);
+            IntBuffer y = stack.mallocInt(1);
+            GLFW.glfwGetWindowSize(handle, x, y);
+            width = x.get();
+            height = y.get();
+            GLFW.glfwGetWindowPos(handle, x, y);
+            posX = x.get();
+            posY = y.get();
+        }
     }
 
     @Override

@@ -110,6 +110,22 @@ public class Window implements IHandled {
     }
 
     /**
+     * Retrieves the window's x-coordinate.
+     * @return The x-coordinate.
+     */
+    public int getPosX() {
+        return posX;
+    }
+
+    /**
+     * Retrieves the window's y-coordinate.
+     * @return The y-coordinate.
+     */
+    public int getPosY() {
+        return posY;
+    }
+
+    /**
      * Sets the window's size.
      * @param width The window's width.
      * @param height The window's height.
@@ -124,6 +140,22 @@ public class Window implements IHandled {
      */
     public Pooled<Vector2I> getSize() {
         return Vector2I.of(width, height);
+    }
+
+    /**
+     * Retrieves the window's width.
+     * @return The width.
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Retrieves the window's height.
+     * @return The height.
+     */
+    public int getHeight() {
+        return height;
     }
 
     /**

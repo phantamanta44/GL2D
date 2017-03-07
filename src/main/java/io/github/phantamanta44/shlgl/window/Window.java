@@ -2,6 +2,7 @@ package io.github.phantamanta44.shlgl.window;
 
 import io.github.phantamanta44.shlgl.model.IHandled;
 import io.github.phantamanta44.shlgl.util.math.Vector2I;
+import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -64,9 +65,9 @@ public class Window implements IHandled {
 
     /**
      * Retrieves the window's position on the screen.
-     * @return A vector of the x and y coordinates.
+     * @return A pooled vector of the x and y coordinates.
      */
-    public Vector2I getPosition() {
+    public Pooled<Vector2I> getPosition() {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer x = stack.mallocInt(1);
             IntBuffer y = stack.mallocInt(1);
@@ -86,9 +87,9 @@ public class Window implements IHandled {
 
     /**
      * Retrieves the window's size.
-     * @return A vector of the width and height.
+     * @return A pooled vector of the width and height.
      */
-    public Vector2I getSize() {
+    public Pooled<Vector2I> getSize() {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer x = stack.mallocInt(1);
             IntBuffer y = stack.mallocInt(1);

@@ -22,12 +22,40 @@ public class Window implements IHandled {
     private final long handle;
 
     /**
+     * The window's x-coordinate.
+     */
+    private int posX;
+
+    /**
+     * The window's y-coordinate.
+     */
+    private int posY;
+
+    /**
+     * The window's width.
+     */
+    private int width;
+
+    /**
+     * The window's height.
+     */
+    private int height;
+
+    /**
      * Constructs a Window instance that interacts with the given window.
      * @param handle The window's handle.
      */
     public Window(long handle) {
         this.handle = handle;
         GLFW.glfwSwapInterval(1);
+        GLFW.glfwSetWindowPosCallback(handle, (wh, w, h) -> {
+            width = w;
+            height = h;
+        });
+        GLFW.glfwSetWindowSizeCallback(handle, (wh, x, y) -> {
+            posX = x;
+            posY = y;
+        });
     }
 
     @Override
@@ -68,12 +96,7 @@ public class Window implements IHandled {
      * @return A pooled vector of the x and y coordinates.
      */
     public Pooled<Vector2I> getPosition() {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer x = stack.mallocInt(1);
-            IntBuffer y = stack.mallocInt(1);
-            GLFW.glfwGetWindowPos(handle, x, y);
-            return Vector2I.of(x.get(), y.get());
-        }
+        return Vector2I.of(posX, posY);
     }
 
     /**
@@ -90,12 +113,7 @@ public class Window implements IHandled {
      * @return A pooled vector of the width and height.
      */
     public Pooled<Vector2I> getSize() {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer x = stack.mallocInt(1);
-            IntBuffer y = stack.mallocInt(1);
-            GLFW.glfwGetWindowSize(handle, x, y);
-            return Vector2I.of(x.get(), y.get());
-        }
+        return Vector2I.of(width, height);
     }
 
     /**

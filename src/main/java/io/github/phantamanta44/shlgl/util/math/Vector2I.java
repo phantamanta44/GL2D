@@ -70,6 +70,11 @@ public class Vector2I implements IShared {
         this.x = this.y = 0;
     }
 
+    @Override
+    public void onFree() {
+        x = y = 0;
+    }
+
     /**
      * Sets this vector's components.
      * @param x The new x value.

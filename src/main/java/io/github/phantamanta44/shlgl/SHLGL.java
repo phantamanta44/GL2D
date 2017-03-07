@@ -1,5 +1,6 @@
 package io.github.phantamanta44.shlgl;
 
+import io.github.phantamanta44.shlgl.event.EventBus;
 import io.github.phantamanta44.shlgl.window.Window;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -43,6 +44,11 @@ public class SHLGL {
     private final Window gameWindow;
 
     /**
+     * The game event bus.
+     */
+    private final EventBus eventBus;
+
+    /**
      * Initializes GLFW and constructs the game window.
      * @param windowWidth The game window's initial width.
      * @param windowHeight The game window's initial height.
@@ -60,6 +66,7 @@ public class SHLGL {
             throw new IllegalStateException("Failed to initialize game window!");
         this.gameWindow = new Window(windowHandle);
         GLFW.glfwMakeContextCurrent(windowHandle);
+        this.eventBus = new EventBus();
     }
 
     /**
@@ -80,6 +87,13 @@ public class SHLGL {
      */
     public Window getGameWindow() {
         return gameWindow;
+    }
+
+    /**
+     * Begins the game's main loop.
+     */
+    public void runMainLoop() {
+        // TODO Implement
     }
 
 }

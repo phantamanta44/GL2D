@@ -32,6 +32,8 @@ public class Event {
      * @param cancelled Whether this event should be cancelled or not.
      */
     public void setCancelled(boolean cancelled) {
+        if (!isCancellable())
+            throw new UnsupportedOperationException("Cannot cancel this event!");
         this.cancelled = cancelled;
     }
 

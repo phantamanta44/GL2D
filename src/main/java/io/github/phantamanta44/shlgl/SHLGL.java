@@ -4,10 +4,17 @@ import io.github.phantamanta44.shlgl.event.EventBus;
 import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
 import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
 import io.github.phantamanta44.shlgl.game.TickTimer;
-import io.github.phantamanta44.shlgl.window.Window;
+import io.github.phantamanta44.shlgl.render.RenderBuffer;
+import io.github.phantamanta44.shlgl.render.Window;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -23,10 +30,10 @@ public class SHLGL {
     private static SHLGL INSTANCE;
 
     /**
-     * Initializes GLFW and constructs the game window.
-     * @param windowWidth The game window's initial width.
-     * @param windowHeight The game window's initial height.
-     * @param windowTitle The game window's initial title bar text.
+     * Initializes GLFW and constructs the game render.
+     * @param windowWidth The game render's initial width.
+     * @param windowHeight The game render's initial height.
+     * @param windowTitle The game render's initial title bar text.
      */
     public static void init(int windowWidth, int windowHeight, String windowTitle) {
         if (INSTANCE == null)
@@ -42,9 +49,14 @@ public class SHLGL {
     }
 
     /**
-     * The game window instance.
+     * The game render instance.
      */
     private final Window gameWindow;
+
+    /**
+     * The game render handle.
+     */
+    private final long windowHandle;
 
     /**
      * The game event bus.
@@ -72,10 +84,10 @@ public class SHLGL {
     private int exitCode = 1;
 
     /**
-     * Initializes GLFW and constructs the game window.
-     * @param windowWidth The game window's initial width.
-     * @param windowHeight The game window's initial height.
-     * @param windowTitle The game window's initial title bar text.
+     * Initializes GLFW and constructs the game render.
+     * @param windowWidth The game render's initial width.
+     * @param windowHeight The game render's initial height.
+     * @param windowTitle The game render's initial title bar text.
      */
     private SHLGL(int windowWidth, int windowHeight, String windowTitle) {
         GLFWErrorCallback.createPrint(System.err).set();
@@ -84,11 +96,13 @@ public class SHLGL {
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
-        long windowHandle = GLFW.glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
+        this.windowHandle = GLFW.glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
         if (windowHandle == NULL)
-            throw new IllegalStateException("Failed to initialize game window!");
+            throw new IllegalStateException("Failed to initialize game render!");
         this.gameWindow = new Window(windowHandle);
         GLFW.glfwMakeContextCurrent(windowHandle);
+        GL.createCapabilities();
+        // TODO Initialize shaders
         this.eventBus = new EventBus();
         this.timer = new TickTimer();
         this.running = true;
@@ -107,16 +121,16 @@ public class SHLGL {
      * Terminates GLFW and ends program execution.
      */
     private void terminate() {
-        Callbacks.glfwFreeCallbacks(gameWindow.getHandle());
-        GLFW.glfwDestroyWindow(gameWindow.getHandle());
+        Callbacks.glfwFreeCallbacks(windowHandle);
+        GLFW.glfwDestroyWindow(windowHandle);
         GLFW.glfwTerminate();
         GLFW.glfwSetErrorCallback(null).free();
         Runtime.getRuntime().exit(exitCode);
     }
 
     /**
-     * Retrieves the game window.
-     * @return The game window.
+     * Retrieves the game render.
+     * @return The game render.
      */
     public Window getGameWindow() {
         return gameWindow;
@@ -145,7 +159,8 @@ public class SHLGL {
                     eventBus.post(new GameTickEvent(tickCount));
                     tickCount++;
                 }
-                eventBus.post(new RenderEvent());
+                render();
+                GLFW.glfwPollEvents();
             } catch (Exception e) {
                 System.err.println("Exception thrown in main loop!");
                 e.printStackTrace();
@@ -153,6 +168,22 @@ public class SHLGL {
         }
         timer.stop();
         terminate();
+    }
+
+    /**
+     * Buffers one frame to be rendered.
+     */
+    private void render() {
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        RenderBuffer buffer = new RenderBuffer();
+        eventBus.post(new RenderEvent(buffer));
+        int[] vbos = new int[buffer.getBufferCount()];
+        GL15.glGenBuffers(vbos);
+        for (int i = 0; i < vbos.length; i++) {
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbos[i]);
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.getBuffer(i), GL15.GL_STATIC_DRAW);
+        }
+        GLFW.glfwSwapBuffers(windowHandle);
     }
 
 }

@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.window;
+package io.github.phantamanta44.shlgl.render;
 
 import io.github.phantamanta44.shlgl.model.IHandled;
 import io.github.phantamanta44.shlgl.util.math.Vector2I;
@@ -11,39 +11,39 @@ import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 
 /**
- * A window in a desktop environment.
+ * A render in a desktop environment.
  * @author Evan Geng
  */
 public class Window implements IHandled {
 
     /**
-     * The window's handle.
+     * The render's handle.
      */
     private final long handle;
 
     /**
-     * The window's x-coordinate.
+     * The render's x-coordinate.
      */
     private int posX;
 
     /**
-     * The window's y-coordinate.
+     * The render's y-coordinate.
      */
     private int posY;
 
     /**
-     * The window's width.
+     * The render's width.
      */
     private int width;
 
     /**
-     * The window's height.
+     * The render's height.
      */
     private int height;
 
     /**
-     * Constructs a Window instance that interacts with the given window.
-     * @param handle The window's handle.
+     * Constructs a Window instance that interacts with the given render.
+     * @param handle The render's handle.
      */
     public Window(long handle) {
         this.handle = handle;
@@ -74,8 +74,8 @@ public class Window implements IHandled {
     }
 
     /**
-     * Sets the visibility state of the window.
-     * @param visible Whether the window should be shown or not.
+     * Sets the visibility state of the render.
+     * @param visible Whether the render should be shown or not.
      */
     public void setVisible(boolean visible) {
         if (visible)
@@ -85,24 +85,24 @@ public class Window implements IHandled {
     }
 
     /**
-     * Retrieves the window's visibility state.
-     * @return Whether the window is visible or not.
+     * Retrieves the render's visibility state.
+     * @return Whether the render is visible or not.
      */
     public boolean getVisible() {
         return GLFW.glfwGetWindowAttrib(handle, GLFW.GLFW_VISIBLE) == 1;
     }
 
     /**
-     * Sets the window's position on the screen.
-     * @param x The window's x-coordinate.
-     * @param y The window's y-coordinate.
+     * Sets the render's position on the screen.
+     * @param x The render's x-coordinate.
+     * @param y The render's y-coordinate.
      */
     public void setPosition(int x, int y) {
         GLFW.glfwSetWindowPos(handle, x, y);
     }
 
     /**
-     * Retrieves the window's position on the screen.
+     * Retrieves the render's position on the screen.
      * @return A pooled vector of the x and y coordinates.
      */
     public Pooled<Vector2I> getPosition() {
@@ -110,7 +110,7 @@ public class Window implements IHandled {
     }
 
     /**
-     * Retrieves the window's x-coordinate.
+     * Retrieves the render's x-coordinate.
      * @return The x-coordinate.
      */
     public int getPosX() {
@@ -118,7 +118,7 @@ public class Window implements IHandled {
     }
 
     /**
-     * Retrieves the window's y-coordinate.
+     * Retrieves the render's y-coordinate.
      * @return The y-coordinate.
      */
     public int getPosY() {
@@ -126,16 +126,16 @@ public class Window implements IHandled {
     }
 
     /**
-     * Sets the window's size.
-     * @param width The window's width.
-     * @param height The window's height.
+     * Sets the render's size.
+     * @param width The render's width.
+     * @param height The render's height.
      */
     public void setSize(int width, int height) {
         GLFW.glfwSetWindowSize(handle, width, height);
     }
 
     /**
-     * Retrieves the window's size.
+     * Retrieves the render's size.
      * @return A pooled vector of the width and height.
      */
     public Pooled<Vector2I> getSize() {
@@ -143,7 +143,7 @@ public class Window implements IHandled {
     }
 
     /**
-     * Retrieves the window's width.
+     * Retrieves the render's width.
      * @return The width.
      */
     public int getWidth() {
@@ -151,7 +151,7 @@ public class Window implements IHandled {
     }
 
     /**
-     * Retrieves the window's height.
+     * Retrieves the render's height.
      * @return The height.
      */
     public int getHeight() {
@@ -159,38 +159,38 @@ public class Window implements IHandled {
     }
 
     /**
-     * Instructs the OS to give the window focus.
+     * Instructs the OS to give the render focus.
      */
     public void focus() {
         GLFW.glfwFocusWindow(handle);
     }
 
     /**
-     * Sets the window's resizability attribute.
-     * @param resizable Whether the window is user-resizable or not.
+     * Sets the render's resizability attribute.
+     * @param resizable Whether the render is user-resizable or not.
      */
     public void setResizable(boolean resizable) {
         GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_RESIZABLE, resizable ? 1 : 0);
     }
 
     /**
-     * Sets the window's always-on-top attribute.
-     * @param alwaysOnTop Whether the window should always be on top or not.
+     * Sets the render's always-on-top attribute.
+     * @param alwaysOnTop Whether the render should always be on top or not.
      */
     public void setAlwaysOnTop(boolean alwaysOnTop) {
         GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_FLOATING, alwaysOnTop ? 1 : 0);
     }
 
     /**
-     * Sets the window's decoration (i.e. borders) state.
-     * @param decorated Whether to decorate the window or not.
+     * Sets the render's decoration (i.e. borders) state.
+     * @param decorated Whether to decorate the render or not.
      */
     public void setDecorated(boolean decorated) {
         GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, decorated ? 1 : 0);
     }
 
     /**
-     * Sets the window's titlebar text.
+     * Sets the render's titlebar text.
      * @param title The title text.
      */
     public void setTitle(String title) {
@@ -198,8 +198,8 @@ public class Window implements IHandled {
     }
 
     /**
-     * Sets the window's icon. <b>NO IMPLEMENTATION!</b>
-     * @param icon The new window icon.
+     * Sets the render's icon. <b>NO IMPLEMENTATION!</b>
+     * @param icon The new render icon.
      */
     public void setIcon(BufferedImage icon) {
         throw new NotImplementedException(); // TODO Implement

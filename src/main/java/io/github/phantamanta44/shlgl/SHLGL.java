@@ -57,6 +57,11 @@ public class SHLGL {
     private final TickTimer timer;
 
     /**
+     * The game tick counter.
+     */
+    private long tickCount;
+
+    /**
      * The game's running state.
      */
     private boolean running;
@@ -132,11 +137,14 @@ public class SHLGL {
     public void runMainLoop(int tickRate) {
         timer.setTickRate(tickRate);
         timer.begin();
+        tickCount = 0;
         while (running) {
             try {
                 int elapsedTicks = timer.getElapsedTicks();
-                for (int i = 0; i < elapsedTicks; i++)
-                    eventBus.post(new GameTickEvent());
+                for (int i = 0; i < elapsedTicks; i++) {
+                    eventBus.post(new GameTickEvent(tickCount));
+                    tickCount++;
+                }
                 eventBus.post(new RenderEvent());
             } catch (Exception e) {
                 System.err.println("Exception thrown in main loop!");

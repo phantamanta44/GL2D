@@ -1,5 +1,8 @@
 package io.github.phantamanta44.shlgl.event;
 
+import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
+import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +22,8 @@ public class EventBus {
      */
     public EventBus() {
         eventStreams = new HashMap<>();
-        // TODO Register default event types
+        registerEvent(GameTickEvent.class);
+        registerEvent(RenderEvent.class);
     }
 
     /**
@@ -28,6 +32,40 @@ public class EventBus {
      */
     public void registerEvent(Class<? extends Event> eventType) {
         eventStreams.put(eventType, new EventStream<>());
+    }
+
+    /**
+     * Registers a listener for the given event.
+     * @param eventType The event to listen for.
+     * @param listener The event listener.
+     * @param <T> The type of the event to listen for.
+     */
+    public <T extends Event> void on(Class<T> eventType, IListener<T> listener) {
+        streamFor(eventType).listen(listener);
+    }
+
+    /**
+     * Registers a one-time listener for the given event.
+     * @param eventType The event to listen for.
+     * @param listener The event listener.
+     * @param <T> The type of the event to listen for.
+     */
+    public <T extends Event> void once(Class<T> eventType, IListener<T> listener) {
+        streamFor(eventType).once(listener);
+    }
+
+    /**
+     * Retrieves the event stream for a given event.
+     * @param eventType The event to look up.
+     * @param <T> The type of the event.
+     * @return The event stream.
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends Event> EventStream<T> streamFor(Class<T> eventType) {
+        EventStream<T> stream = eventStreams.get(eventType);
+        if (stream == null)
+            throw new IllegalArgumentException("Event type not registered: " + eventType.getName());
+        return stream;
     }
 
     /**

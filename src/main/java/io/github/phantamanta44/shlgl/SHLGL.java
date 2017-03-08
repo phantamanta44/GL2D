@@ -1,6 +1,9 @@
 package io.github.phantamanta44.shlgl;
 
 import io.github.phantamanta44.shlgl.event.EventBus;
+import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
+import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
+import io.github.phantamanta44.shlgl.game.TickTimer;
 import io.github.phantamanta44.shlgl.window.Window;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -49,6 +52,21 @@ public class SHLGL {
     private final EventBus eventBus;
 
     /**
+     * The game tick timer.
+     */
+    private final TickTimer timer;
+
+    /**
+     * The game's running state.
+     */
+    private boolean running;
+
+    /**
+     * The exit code to terminate with.
+     */
+    private int exitCode = 1;
+
+    /**
      * Initializes GLFW and constructs the game window.
      * @param windowWidth The game window's initial width.
      * @param windowHeight The game window's initial height.
@@ -67,13 +85,23 @@ public class SHLGL {
         this.gameWindow = new Window(windowHandle);
         GLFW.glfwMakeContextCurrent(windowHandle);
         this.eventBus = new EventBus();
+        this.timer = new TickTimer();
+        this.running = true;
     }
 
     /**
-     * Shuts down the game engine and terminates the program.
+     * Shuts down the game engine.
      * @param exitCode The exit code to exit with.
      */
     public void shutdown(int exitCode) {
+        running = false;
+        this.exitCode = exitCode;
+    }
+
+    /**
+     * Terminates GLFW and ends program execution.
+     */
+    private void terminate() {
         Callbacks.glfwFreeCallbacks(gameWindow.getHandle());
         GLFW.glfwDestroyWindow(gameWindow.getHandle());
         GLFW.glfwTerminate();
@@ -90,10 +118,33 @@ public class SHLGL {
     }
 
     /**
-     * Begins the game's main loop.
+     * Retrieves the event bus.
+     * @return The event bus.
      */
-    public void runMainLoop() {
-        // TODO Implement
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    /**
+     * Begins the game's main loop.
+     * @param tickRate The tick rate, in ticks per second.
+     */
+    public void runMainLoop(int tickRate) {
+        timer.setTickRate(tickRate);
+        timer.begin();
+        while (running) {
+            try {
+                int elapsedTicks = timer.getElapsedTicks();
+                for (int i = 0; i < elapsedTicks; i++)
+                    eventBus.post(new GameTickEvent());
+                eventBus.post(new RenderEvent());
+            } catch (Exception e) {
+                System.err.println("Exception thrown in main loop!");
+                e.printStackTrace();
+            }
+        }
+        timer.stop();
+        terminate();
     }
 
 }

@@ -33,12 +33,14 @@ public class EventBus {
     /**
      * Dispatches an event to all eligible listeners.
      * @param event The event to post.
+     * @return <code>false</code> if the event was cancelled; otherwise, <code>true</code>.
      */
     @SuppressWarnings("unchecked")
-    public void post(Event event) {
+    public boolean post(Event event) {
         eventStreams.entrySet().stream()
                 .filter(e -> e.getKey().isAssignableFrom(event.getClass()))
                 .forEach(e -> e.getValue().post(event));
+        return !event.isCancelled();
     }
 
 }

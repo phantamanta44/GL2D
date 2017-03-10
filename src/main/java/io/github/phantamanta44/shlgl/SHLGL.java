@@ -6,14 +6,21 @@ import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
 import io.github.phantamanta44.shlgl.game.TickTimer;
 import io.github.phantamanta44.shlgl.render.RenderBuffer;
 import io.github.phantamanta44.shlgl.render.Window;
+import io.github.phantamanta44.shlgl.util.io.InputStreamUtils;
+import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
+import io.github.phantamanta44.shlgl.util.render.ShaderUtils;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -69,6 +76,11 @@ public class SHLGL {
     private final TickTimer timer;
 
     /**
+     * The shader program used for rendering.
+     */
+    private int shaderProg;
+
+    /**
      * The game tick counter.
      */
     private long tickCount;
@@ -98,14 +110,36 @@ public class SHLGL {
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
         this.windowHandle = GLFW.glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
         if (windowHandle == NULL)
-            throw new IllegalStateException("Failed to initialize game render!");
+            throw new IllegalStateException("Failed to initialize game window!");
         this.gameWindow = new Window(windowHandle);
         GLFW.glfwMakeContextCurrent(windowHandle);
         GL.createCapabilities();
-        // TODO Initialize shaders
+        initShaders();
         this.eventBus = new EventBus();
         this.timer = new TickTimer();
         this.running = true;
+    }
+
+    /**
+     * Initializes the default vertex and fragment shaders.
+     */
+    private void initShaders() {
+        try (InputStream vertIn = ResourceUtils.getStream("shlgl/shader/shader.vert");
+             InputStream fragIn = ResourceUtils.getStream("shlgl/shader/shader.frag")) {
+            int vert = ShaderUtils.compileShader(GL20.GL_VERTEX_SHADER, InputStreamUtils.readAsString(vertIn));
+            int frag = ShaderUtils.compileShader(GL20.GL_FRAGMENT_SHADER, InputStreamUtils.readAsString(fragIn));
+            shaderProg = ShaderUtils.createProgram(vert, frag);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to initialize shaders!", e);
+        }
+        int loc = GL20.glGetAttribLocation(shaderProg, "posXY");
+        GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glEnableVertexAttribArray(loc);
+        loc = GL20.glGetAttribLocation(shaderProg, "posUV");
+        GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glEnableVertexAttribArray(loc);
+        loc = GL20.glGetUniformLocation(shaderProg, "transformKernel");
+
     }
 
     /**

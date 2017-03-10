@@ -14,7 +14,7 @@ public class ShaderUtils {
      * @param source The shader source code.
      * @return The new shader's handle.
      */
-    public int compileShader(int type, String source) {
+    public static int compileShader(int type, String source) {
         int shader = GL20.glCreateShader(type);
         GL20.glShaderSource(shader, source);
         GL20.glCompileShader(shader);
@@ -26,7 +26,7 @@ public class ShaderUtils {
      * @param shaders The handles of the shaders.
      * @return The new program's handle.
      */
-    public int createProgram(int... shaders) {
+    public static int createProgram(int... shaders) {
         int program = GL20.glCreateProgram();
         for (int shader : shaders)
             GL20.glAttachShader(program, shader);

@@ -1,5 +1,6 @@
 package io.github.phantamanta44.shlgl.render;
 
+import io.github.phantamanta44.shlgl.SHLGL;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -8,7 +9,31 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class RenderBuffer {
 
+    /**
+     * The parent SHLGL instance.
+     */
+    private final SHLGL shlgl;
+
+    /**
+     * Creates a render buffer.
+     * @param shlgl The SHLGL instance under which this buffer should run.
+     */
+    public RenderBuffer(SHLGL shlgl) {
+        this.shlgl = shlgl;
+    }
+
     // TODO Drawing methods
+
+    /**
+     * Sets the transformation colour.
+     * @param r The red component.
+     * @param g The green component.
+     * @param b The blue component.
+     * @param a The alpha component.
+     */
+    public void color4F(float r, float g, float b, float a) {
+
+    }
 
     /**
      * Retrieves the total number of VBOs required to draw this buffer.

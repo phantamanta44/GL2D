@@ -6,24 +6,34 @@ import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import io.github.phantamanta44.shlgl.util.memory.ResourcePool;
 
 /**
- * A 2-dimensional vector of integer components.
+ * A 4-dimensional vector of floateger components.
  * @author Evan Geng
  */
-public class Vector2I implements IShared {
+public class Vector4F implements IShared {
 
     /**
-     * The immutable constant vector (0, 0).
+     * The immutable constant vector (0, 0, 0, 0).
      */
-    public static Vector2I ZERO = new Vector2I() {
+    public static Vector4F ZERO = new Vector4F() {
 
         @Override
-        public Vector2I x(int x) {
+        public Vector4F x(float x) {
             throw new ImmutableException("x");
         }
 
         @Override
-        public Vector2I y(int y) {
+        public Vector4F y(float y) {
             throw new ImmutableException("y");
+        }
+
+        @Override
+        public Vector4F z(float z) {
+            throw new ImmutableException("z");
+        }
+
+        @Override
+        public Vector4F w(float w) {
+            throw new ImmutableException("w");
         }
 
     };
@@ -32,11 +42,13 @@ public class Vector2I implements IShared {
      * Creates a new vector with the given components.
      * @param x The x component.
      * @param y The y component.
+     * @param z The z component.
+     * @param w The w component.
      * @return A {@link Pooled} instance containing the new vector.
      */
-    public static Pooled<Vector2I> of(int x, int y) {
-        Pooled<Vector2I> res = zeroes();
-        res.get().set(x, y);
+    public static Pooled<Vector4F> of(float x, float y, float z, float w) {
+        Pooled<Vector4F> res = zeroes();
+        res.get().set(x, y, z, w);
         return res;
     }
 
@@ -44,52 +56,64 @@ public class Vector2I implements IShared {
      * Creates a new (mutable) vector of all zeroes.
      * @return A {@link Pooled} instance containing the new vector.
      */
-    public static Pooled<Vector2I> zeroes() {
+    public static Pooled<Vector4F> zeroes() {
         return pool.get();
     }
 
     /**
-     * The shared resource pool governing Vector2I instantiation.
+     * The shared resource pool governing Vector4F instantiation.
      */
-    private static final ResourcePool<Vector2I> pool = new ResourcePool<>(Vector2I::new);
+    private static final ResourcePool<Vector4F> pool = new ResourcePool<>(Vector4F::new);
 
     /**
      * The vector's x component.
      */
-    private int x;
+    private float x;
 
     /**
      * The vector's y component.
      */
-    private int y;
+    private float y;
+
+    /**
+     * The vector's z component.
+     */
+    private float z;
+
+    /**
+     * The vector's w component.
+     */
+    private float w;
 
     /**
      * Creates a new vector with zeroed components.
      */
-    private Vector2I() {
+    private Vector4F() {
         onFree();
     }
 
     @Override
     public void onFree() {
-        x = y = 0;
+        x = y = z = w = 0;
     }
 
     /**
      * Sets this vector's components.
      * @param x The new x value.
      * @param y The new y value.
+     * @param z The new z value.
+     * @param w The new w value.
      * @return This vector.
      */
-    public Vector2I set(int x, int y) {
-        return x(x).y(y);
+    public Vector4F set(float x, float y, float z, float w) {
+        return x(x).y(y).z(z).w(w);
     }
 
     /**
      * Gets this vector's x component.
      * @return The x value.
      */
-    public int x() {
+    public float x() {
         return x;
     }
 
@@ -98,7 +122,7 @@ public class Vector2I implements IShared {
      * @param x The new x value.
      * @return This vector.
      */
-    public Vector2I x(int x) {
+    public Vector4F x(float x) {
         this.x = x;
         return this;
     }
@@ -107,7 +131,7 @@ public class Vector2I implements IShared {
      * Gets this vector's y component.
      * @return The y value.
      */
-    public int y() {
+    public float y() {
         return y;
     }
 
@@ -116,9 +140,27 @@ public class Vector2I implements IShared {
      * @param y The new y value.
      * @return This vector.
      */
-    public Vector2I y(int y) {
+    public Vector4F y(float y) {
         this.y = y;
         return this;
+    }
+
+    /**
+     * Gets this vector's z component.
+     * @return The z value.
+     */
+    public float z() {
+        return z;
+    }
+
+    /**
+     * Sets this vector's w component.
+     * @param w The new w value.
+     * @return This vector.
+     */
+    public Vector4F w(float w) {
+        this.w = w;
+        return this; // FIXME this class is broken
     }
 
     /**
@@ -134,7 +176,7 @@ public class Vector2I implements IShared {
      * @param other The other addend vector.
      * @return This vector.
      */
-    public Vector2I add(Vector2I other) {
+    public Vector4F add(Vector4F other) {
         return add(other.x(), other.y());
     }
 
@@ -144,7 +186,7 @@ public class Vector2I implements IShared {
      * @param y The y addend.
      * @return This vector.
      */
-    public Vector2I add(int x, int y) {
+    public Vector4F add(float x, float y) {
         return addX(x).addY(y);
     }
 
@@ -153,7 +195,7 @@ public class Vector2I implements IShared {
      * @param addend The other addend.
      * @return This vector.
      */
-    public Vector2I addX(int addend) {
+    public Vector4F addX(float addend) {
         return x(x + addend);
     }
 
@@ -162,7 +204,7 @@ public class Vector2I implements IShared {
      * @param addend The other addend.
      * @return This vector.
      */
-    public Vector2I addY(int addend) {
+    public Vector4F addY(float addend) {
         return y(y + addend);
     }
 
@@ -171,8 +213,8 @@ public class Vector2I implements IShared {
      * @param factor The multiplier.
      * @return This vector.
      */
-    public Vector2I multiply(double factor) {
-        return x((int)Math.floor(x * factor)).y((int)Math.floor(y * factor));
+    public Vector4F multiply(double factor) {
+        return x((float)Math.floor(x * factor)).y((float)Math.floor(y * factor));
     }
 
 }

@@ -1,14 +1,14 @@
 package io.github.phantamanta44.shlgl;
 
 import io.github.phantamanta44.shlgl.event.EventBus;
-import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
 import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
+import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
 import io.github.phantamanta44.shlgl.game.TickTimer;
-import io.github.phantamanta44.shlgl.window.RenderBuffer;
-import io.github.phantamanta44.shlgl.window.Window;
+import io.github.phantamanta44.shlgl.render.RenderBuffer;
+import io.github.phantamanta44.shlgl.render.Window;
 import io.github.phantamanta44.shlgl.util.io.InputStreamUtils;
 import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
-import io.github.phantamanta44.shlgl.util.window.ShaderUtils;
+import io.github.phantamanta44.shlgl.util.render.ShaderUtils;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -16,12 +16,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.system.MemoryStack;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.IntBuffer;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -193,7 +190,7 @@ public class SHLGL {
                     eventBus.post(new GameTickEvent(tickCount));
                     tickCount++;
                 }
-                window();
+                render();
                 GLFW.glfwPollEvents();
             } catch (Exception e) {
                 System.err.println("Exception thrown in main loop!");
@@ -209,7 +206,7 @@ public class SHLGL {
      */
     private void render() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        RenderBuffer buffer = new RenderBuffer();
+        RenderBuffer buffer = new RenderBuffer(this);
         eventBus.post(new RenderEvent(buffer));
         int[] vbos = new int[buffer.getBufferCount()];
         GL15.glGenBuffers(vbos);

@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.window;
+package io.github.phantamanta44.shlgl.render;
 
 import io.github.phantamanta44.shlgl.model.IHandled;
 import io.github.phantamanta44.shlgl.util.math.Vector2I;

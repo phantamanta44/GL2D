@@ -8,6 +8,9 @@ import io.github.phantamanta44.shlgl.util.math.Vector4F;
  */
 public class Vec4Property extends ShaderProperty<Vector4F> {
 
-    // FIXME FIXFIXFIX
+    @Override
+    public void set(Vector4F value) {
+
+    }
 
 }

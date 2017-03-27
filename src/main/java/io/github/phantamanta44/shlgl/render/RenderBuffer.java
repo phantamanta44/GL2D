@@ -35,20 +35,4 @@ public class RenderBuffer {
         throw new NotImplementedException(); // TODO Implement
     }
 
-    /**
-     * Retrieves the total number of VBOs required to draw this buffer.
-     * @return The VBO count.
-     */
-    public int getBufferCount() {
-        throw new NotImplementedException(); // TODO Implement
-    }
-
-    /**
-     * Retrieves the vertex data for a specific VBO.
-     * @return The VBO data.
-     */
-    public float[] getBuffer(int index) {
-        throw new NotImplementedException(); // TODO Implement
-    }
-
 }

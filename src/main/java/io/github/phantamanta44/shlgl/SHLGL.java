@@ -8,6 +8,7 @@ import io.github.phantamanta44.shlgl.render.RenderBuffer;
 import io.github.phantamanta44.shlgl.render.Window;
 import io.github.phantamanta44.shlgl.util.io.InputStreamUtils;
 import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
+import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import io.github.phantamanta44.shlgl.util.render.ShaderUtils;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -19,6 +20,8 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -58,7 +61,7 @@ public class SHLGL {
     private final Window gameWindow;
 
     /**
-     * The game render handle.
+     * The game window handle.
      */
     private final long windowHandle;
 
@@ -76,6 +79,16 @@ public class SHLGL {
      * The shader program used for rendering.
      */
     private int shaderProg;
+
+    /**
+     * The <code>uniform</code>s exposed by the shader program.
+     */
+    private Collection<ShaderProperty<?>> uniforms;
+
+    /**
+     * The address of the VBO used for rendering.
+     */
+    private int vbo;
 
     /**
      * The game tick counter.
@@ -111,6 +124,8 @@ public class SHLGL {
         this.gameWindow = new Window(windowHandle);
         GLFW.glfwMakeContextCurrent(windowHandle);
         GL.createCapabilities();
+        vbo = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         initShaders();
         this.eventBus = new EventBus();
         this.timer = new TickTimer();
@@ -135,6 +150,7 @@ public class SHLGL {
         loc = GL20.glGetAttribLocation(shaderProg, "posUV");
         GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, 0, 0);
         GL20.glEnableVertexAttribArray(loc);
+        uniforms = new LinkedList<>();
         loc = GL20.glGetUniformLocation(shaderProg, "transformKernel");
         // FIXME finish
     }
@@ -208,12 +224,7 @@ public class SHLGL {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         RenderBuffer buffer = new RenderBuffer(this);
         eventBus.post(new RenderEvent(buffer));
-        int[] vbos = new int[buffer.getBufferCount()];
-        GL15.glGenBuffers(vbos);
-        for (int i = 0; i < vbos.length; i++) {
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbos[i]);
-            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.getBuffer(i), GL15.GL_STATIC_DRAW);
-        }
+        // TODO Buffer data from RenderBuffer
         GLFW.glfwSwapBuffers(windowHandle);
     }
 

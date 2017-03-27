@@ -32,7 +32,7 @@ public class RenderBuffer {
      * @param a The alpha component.
      */
     public void color4F(float r, float g, float b, float a) {
-
+        throw new NotImplementedException(); // TODO Implement
     }
 
     /**

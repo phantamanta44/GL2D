@@ -6,7 +6,7 @@ import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import io.github.phantamanta44.shlgl.util.memory.ResourcePool;
 
 /**
- * A 4-dimensional vector of floateger components.
+ * A 4-dimensional vector of float components.
  * @author Evan Geng
  */
 public class Vector4F implements IShared {
@@ -154,13 +154,31 @@ public class Vector4F implements IShared {
     }
 
     /**
+     * Sets this vector's z component.
+     * @param z The new z value.
+     * @return This vector.
+     */
+    public Vector4F z(float z) {
+        this.z = z;
+        return this;
+    }
+
+    /**
+     * Gets this vector's w component.
+     * @return The w value.
+     */
+    public float w() {
+        return w;
+    }
+
+    /**
      * Sets this vector's w component.
      * @param w The new w value.
      * @return This vector.
      */
     public Vector4F w(float w) {
         this.w = w;
-        return this; // FIXME this class is broken
+        return this;
     }
 
     /**
@@ -168,7 +186,7 @@ public class Vector4F implements IShared {
      * @return The magnitude.
      */
     public double magnitude() {
-        return Math.hypot(x, y);
+        return MathUtils.magnitude(x, y, z, w);
     }
 
     /**
@@ -177,17 +195,19 @@ public class Vector4F implements IShared {
      * @return This vector.
      */
     public Vector4F add(Vector4F other) {
-        return add(other.x(), other.y());
+        return add(other.x(), other.y(), other.z(), other.w());
     }
 
     /**
      * Adds another vector to this vector.
      * @param x The x addend.
      * @param y The y addend.
+     * @param z The z addend.
+     * @param w The w addend.
      * @return This vector.
      */
-    public Vector4F add(float x, float y) {
-        return addX(x).addY(y);
+    public Vector4F add(float x, float y, float z, float w) {
+        return addX(x).addY(y).addZ(z).addW(w);
     }
 
     /**
@@ -209,12 +229,33 @@ public class Vector4F implements IShared {
     }
 
     /**
+     * Adds to this vector's z component.
+     * @param addend The other addend.
+     * @return This vector.
+     */
+    public Vector4F addZ(float addend) {
+        return z(z + addend);
+    }
+
+    /**
+     * Adds to this vector's w component.
+     * @param addend The other addend.
+     * @return This vector.
+     */
+    public Vector4F addW(float addend) {
+        return w(w + addend);
+    }
+
+    /**
      * Multiplies this vector by a scalar.
      * @param factor The multiplier.
      * @return This vector.
      */
     public Vector4F multiply(double factor) {
-        return x((float)Math.floor(x * factor)).y((float)Math.floor(y * factor));
+        return x((float)Math.floor(x * factor))
+                .y((float)Math.floor(y * factor))
+                .z((float)Math.floor(z * factor))
+                .w((float)Math.floor(w * factor));
     }
 
 }

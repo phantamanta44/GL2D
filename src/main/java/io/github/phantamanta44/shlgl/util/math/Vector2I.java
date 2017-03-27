@@ -126,7 +126,7 @@ public class Vector2I implements IShared {
      * @return The magnitude.
      */
     public double magnitude() {
-        return Math.hypot(x, y);
+        return MathUtils.magnitude(x, y);
     }
 
     /**

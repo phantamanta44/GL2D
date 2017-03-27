@@ -139,7 +139,7 @@ public class SHLGL {
         GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, 0, 0);
         GL20.glEnableVertexAttribArray(loc);
         loc = GL20.glGetUniformLocation(shaderProg, "transformKernel");
-
+        // FIXME finish
     }
 
     /**

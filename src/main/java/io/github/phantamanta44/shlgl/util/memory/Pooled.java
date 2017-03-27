@@ -4,7 +4,7 @@ package io.github.phantamanta44.shlgl.util.memory;
  * A container for a pooled resource.
  * @author Evan Geng
  */
-public class Pooled<T extends IShared> {
+public class Pooled<T extends IShared> implements AutoCloseable {
 
     /**
      * The parent resource pool.
@@ -60,6 +60,11 @@ public class Pooled<T extends IShared> {
      */
     public boolean isFree() {
         return free;
+    }
+
+    @Override
+    public void close() {
+        free();
     }
 
 }

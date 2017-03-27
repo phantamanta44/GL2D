@@ -1,7 +1,13 @@
 package io.github.phantamanta44.shlgl.util.render;
 
+import io.github.phantamanta44.shlgl.util.math.Vector4F;
+
 /**
- * Created by evgen18 on 3/10/2017.
+ * Represents a GLSL <code>vec4</code>.
+ * @author Evan Geng
  */
 public class Vec4Property extends ShaderProperty<Vector4F> {
+
+    // FIXME FIXFIXFIX
+
 }

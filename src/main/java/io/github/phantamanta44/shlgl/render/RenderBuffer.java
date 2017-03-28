@@ -21,12 +21,12 @@ public class RenderBuffer {
     /**
      * The vertex transformation kernel.
      */
-    private final ShaderProperty trans;
+    private final ShaderProperty.Mat4 trans;
 
     /**
      * The colour transformation vector.
      */
-    private final ShaderProperty colour;
+    private final ShaderProperty.Vec4 colour;
 
     /**
      * The texture sampler.
@@ -39,7 +39,7 @@ public class RenderBuffer {
      * @param colour The colour modifier uniform.
      * @param tex The texture sampler uniform.
      */
-    public RenderBuffer(ShaderProperty trans, ShaderProperty colour, TexConsumer tex) {
+    public RenderBuffer(ShaderProperty.Mat4 trans, ShaderProperty.Vec4 colour, TexConsumer tex) {
         this.actions = new LinkedList<>();
         this.trans = trans;
         this.colour = colour;
@@ -66,6 +66,14 @@ public class RenderBuffer {
      */
     public void colour4F(float r, float g, float b, float a) {
         throw new NotImplementedException(); // TODO Implement
+    }
+
+    /**
+     * Buffers an action for the next render tick.
+     * @param action The action to buffer.
+     */
+    private void buffer(Runnable action) {
+        actions.add(action);
     }
 
     /**

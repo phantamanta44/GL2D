@@ -82,12 +82,12 @@ public class SHLGL {
     /**
      * The transformation kernel uniform.
      */
-    private ShaderProperty trans;
+    private ShaderProperty.Mat4 trans;
 
     /**
      * The colour modifier uniform.
      */
-    private ShaderProperty colourTrans;
+    private ShaderProperty.Vec4 colourTrans;
 
     /**
      * The texture sampler uniform.
@@ -166,11 +166,11 @@ public class SHLGL {
         GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, Float.BYTES * 4, Float.BYTES * 2);
         GL20.glEnableVertexAttribArray(loc);
         loc = GL20.glGetUniformLocation(shaderProg, "transformKernel");
-        trans = new ShaderProperty(shaderProg, loc);
+        trans = new ShaderProperty.Mat4(shaderProg, loc);
         loc = GL20.glGetUniformLocation(shaderProg, "tex");
         texProp = new TexConsumer(shaderProg, loc);
         loc = GL20.glGetUniformLocation(shaderProg, "colourTransform");
-        colourTrans = new ShaderProperty(shaderProg, loc);
+        colourTrans = new ShaderProperty.Vec4(shaderProg, loc);
     }
 
     /**

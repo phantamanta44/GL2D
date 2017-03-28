@@ -1,9 +1,13 @@
 package io.github.phantamanta44.shlgl.render;
 
+import io.github.phantamanta44.shlgl.util.math.Vector2I;
 import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import io.github.phantamanta44.shlgl.util.render.TexConsumer;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.system.MemoryStack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,6 +38,16 @@ public class RenderBuffer {
     private final TexConsumer tex;
 
     /**
+     * The rendering device width.
+     */
+    private int width;
+
+    /**
+     * The rendering device height.
+     */
+    private int height;
+
+    /**
      * Creates a render buffer.
      * @param trans The transformation kernel uniform.
      * @param colour The colour modifier uniform.
@@ -54,6 +68,22 @@ public class RenderBuffer {
      * @param height The rectangle's height.
      */
     public void drawRect(float x, float y, float width, float height) {
+        buffer(() ->
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[] {
+                    // TODO MarginHandler-offset vertices
+            }, GL15.GL_STREAM_DRAW)
+        );
+    }
+
+    /**
+     * Draws a textured line.
+     * @param x Point A's x-coordinate.
+     * @param y Point A's y-coordinate.
+     * @param x2 Point B's x-coordinate.
+     * @param y2 Point B's y-coordinate.
+     * @param width The thickness of the line.
+     */
+    public void drawLine(float x, float y, float x2, float y2, float width) {
         throw new NotImplementedException(); // TODO Implement
     }
 
@@ -81,7 +111,17 @@ public class RenderBuffer {
      */
     public void flush() {
         actions.forEach(Runnable::run);
+    }
+
+    /**
+     * Refreshes the buffer's state.
+     * @param width The resolution's width.
+     * @param height The resolution's height.
+     */
+    public void refresh(int width, int height) {
         actions.clear();
+        this.width = width;
+        this.height = height;
     }
 
 }

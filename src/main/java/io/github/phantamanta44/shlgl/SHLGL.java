@@ -4,10 +4,13 @@ import io.github.phantamanta44.shlgl.event.EventBus;
 import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
 import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
 import io.github.phantamanta44.shlgl.game.TickTimer;
+import io.github.phantamanta44.shlgl.render.MarginHandler;
 import io.github.phantamanta44.shlgl.render.RenderBuffer;
 import io.github.phantamanta44.shlgl.render.Window;
 import io.github.phantamanta44.shlgl.util.io.InputStreamUtils;
 import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
+import io.github.phantamanta44.shlgl.util.math.Vector2I;
+import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import io.github.phantamanta44.shlgl.util.render.ShaderUtils;
 import io.github.phantamanta44.shlgl.util.render.TexConsumer;
@@ -100,6 +103,21 @@ public class SHLGL {
     private RenderBuffer renderBuffer;
 
     /**
+     * The resolution width.
+     */
+    private int width;
+
+    /**
+     * The resolution height.
+     */
+    private int height;
+
+    /**
+     * The resolution-conservation margin handler instance.
+     */
+    private MarginHandler margins;
+
+    /**
      * The address of the VBO used for rendering.
      */
     private int vbo;
@@ -141,6 +159,8 @@ public class SHLGL {
         vbo = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         initShaders();
+        setResolution(640, 480);
+        this.margins = new MarginHandler();
         this.eventBus = new EventBus();
         this.timer = new TickTimer();
         this.running = true;
@@ -171,6 +191,14 @@ public class SHLGL {
         texProp = new TexConsumer(shaderProg, loc);
         loc = GL20.glGetUniformLocation(shaderProg, "colourTransform");
         colourTrans = new ShaderProperty.Vec4(shaderProg, loc);
+    }
+
+    /**
+     * Sets the game resolution. 640x480 by default.
+     */
+    public void setResolution(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -240,6 +268,10 @@ public class SHLGL {
      * Buffers one frame to be rendered.
      */
     private void render() {
+        try (Pooled<Vector2I> size = gameWindow.getSize()) {
+            margins.update(size.get(), width, height);
+        }
+        renderBuffer.refresh(width, height);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         eventBus.post(new RenderEvent(renderBuffer));
         renderBuffer.flush();

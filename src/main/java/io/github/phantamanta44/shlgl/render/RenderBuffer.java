@@ -64,7 +64,7 @@ public class RenderBuffer {
      * @param b The blue component.
      * @param a The alpha component.
      */
-    public void coloru4F(float r, float g, float b, float a) {
+    public void colour4F(float r, float g, float b, float a) {
         throw new NotImplementedException(); // TODO Implement
     }
 
@@ -73,6 +73,7 @@ public class RenderBuffer {
      */
     public void flush() {
         actions.forEach(Runnable::run);
+        actions.clear();
     }
 
 }

@@ -95,6 +95,11 @@ public class SHLGL {
     private TexConsumer texProp;
 
     /**
+     * The rendering action buffer.
+     */
+    private RenderBuffer renderBuffer;
+
+    /**
      * The address of the VBO used for rendering.
      */
     private int vbo;
@@ -209,6 +214,7 @@ public class SHLGL {
      * @param tickRate The tick rate, in ticks per second.
      */
     public void runMainLoop(int tickRate) {
+        renderBuffer = new RenderBuffer(trans, colourTrans, texProp);
         timer.setTickRate(tickRate);
         timer.begin();
         tickCount = 0;
@@ -235,9 +241,8 @@ public class SHLGL {
      */
     private void render() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        RenderBuffer buffer = new RenderBuffer(trans, colourTrans, texProp);
-        eventBus.post(new RenderEvent(buffer));
-        buffer.flush();
+        eventBus.post(new RenderEvent(renderBuffer));
+        renderBuffer.flush();
         // TODO Make call to glDrawArrays
         GLFW.glfwSwapBuffers(windowHandle);
     }

@@ -11,32 +11,42 @@ public class MarginHandler {
     /**
      * The window width.
      */
-    private int winWidth;
+    private float winWidth;
 
     /**
      * The window height.
      */
-    private int winHeight;
+    private float winHeight;
 
     /**
      * The resolution width.
      */
-    private int resWidth;
+    private float resWidth;
 
     /**
      * The resolution height.
      */
-    private int resHeight;
+    private float resHeight;
 
     /**
      * Cached horizontal margin value.
      */
-    private int halfMarginHor;
+    private float halfMarginHor;
 
     /**
      * Cached vertical margin value.
      */
-    private int halfMarginVer;
+    private float halfMarginVer;
+
+    /**
+     * Cached horizontal scaling factor.
+     */
+    private float xFactor;
+
+    /**
+     * Cached vertical scaling factor.
+     */
+    private float yFactor;
 
     /**
      * Updates the cached width and height values.
@@ -45,30 +55,54 @@ public class MarginHandler {
      * @param height The new resolution height.
      */
     public void update(Vector2I winSize, int width, int height) {
-        this.winWidth = winSize.x();
-        this.winHeight = winSize.y();
-        this.resWidth = width;
-        this.resHeight = height;
-        calculateMargin(); // TODO Make this call lazy
+        if (this.winWidth != winSize.x()
+                || this.winHeight != winSize.y()
+                || this.resWidth != width
+                || this.resHeight != height) {
+            this.winWidth = winSize.x();
+            this.winHeight = winSize.y();
+            this.resWidth = width;
+            this.resHeight = height;
+            calculateMargin();
+        }
     }
 
     /**
      * Recalculates and caches margin values.
      */
     private void calculateMargin() {
-        float kWidthHeight = (float)resHeight / (float)resWidth;
-        int idealWinHeight = (int)Math.floor(winWidth * kWidthHeight); // TODO Probably do this by width instead for speed
-        if (winHeight == idealWinHeight) {
+        float kHeightWidth = resWidth / resHeight;
+        float idealWinWidth = winHeight * kHeightWidth;
+        if (Math.abs(winWidth - idealWinWidth) < 0.5F) {
             halfMarginHor = halfMarginVer = 0;
-        } else if (winHeight < idealWinHeight) {
+        } else if (winWidth > idealWinWidth) {
             halfMarginVer = 0;
-            // TODO Pad horizontally
+            halfMarginHor = (winWidth - idealWinWidth) / 2;
         } else {
             halfMarginHor = 0;
-            halfMarginVer = (int)Math.floor(winHeight - idealWinHeight) / 2;
+            float idealHeight = winWidth * resHeight / resWidth;
+            halfMarginVer = (winHeight - idealHeight) / 2;
         }
+        xFactor = (winWidth - halfMarginHor * 2) / resWidth;
+        yFactor = (winHeight - halfMarginVer * 2) / resHeight;
     }
 
-    // TODO Implement offsetting/scaling
+    /**
+     * Computes a device x-coordinate for the given render x-coordinate.
+     * @param resX The x-coordinate.
+     * @return The corresponding device coordinate.
+     */
+    public float computeX(float resX) {
+        return (resX * xFactor + halfMarginHor) / winWidth;
+    }
+
+    /**
+     * Computes a device y-coordinate for the given render y-coordinate.
+     * @param resY The y-coordinate.
+     * @return The corresponding device coordinate.
+     */
+    public float computeY(float resY) {
+        return (resY * yFactor + halfMarginVer) / winHeight;
+    }
 
 }

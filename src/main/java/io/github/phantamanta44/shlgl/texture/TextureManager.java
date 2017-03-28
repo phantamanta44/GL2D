@@ -27,6 +27,11 @@ public class TextureManager {
     private static final Map<Integer, TextureInfo> infoById = new ConcurrentHashMap<>();
 
     /**
+     * The currently bound texture.
+     */
+    private static TextureInfo bound;
+
+    /**
      * Retrieves the texture ID for a given path, loading the texture if it isn't already cached.
      * @param path The path to the texture.
      * @return The texture ID.
@@ -83,6 +88,39 @@ public class TextureManager {
      */
     public static TextureInfo getTextureInfo(int texId) {
         return infoById.get(texId);
+    }
+
+    /**
+     * Retrieves the currently bound texture info.
+     * @return The texture.
+     */
+    public static TextureInfo getBound() {
+        return bound;
+    }
+
+    /**
+     * Binds a texture by info. The preferred way to bind textures.
+     * @param info The texture to bind.
+     */
+    public static void bind(TextureInfo info) {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, info.id);
+        bound = info;
+    }
+
+    /**
+     * Binds a texture by ID. Use {@link #bind(TextureInfo)} instead if possible.
+     * @param id The texture ID.
+     */
+    public static void bind(int id) {
+        bind(getTextureInfo(id));
+    }
+
+    /**
+     * Binds a texture by path. Use {@link #bind(TextureInfo)} instead if possible.
+     * @param path The path to the texture.
+     */
+    public static void bind(String path) {
+        bind(getTextureId(path));
     }
 
 }

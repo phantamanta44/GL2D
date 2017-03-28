@@ -13,7 +13,6 @@ import io.github.phantamanta44.shlgl.util.math.Vector2I;
 import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import io.github.phantamanta44.shlgl.util.render.ShaderUtils;
-import io.github.phantamanta44.shlgl.util.render.TexConsumer;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -93,11 +92,6 @@ public class SHLGL {
     private ShaderProperty.Vec4 colourTrans;
 
     /**
-     * The texture sampler uniform.
-     */
-    private TexConsumer texProp;
-
-    /**
      * The rendering action buffer.
      */
     private RenderBuffer renderBuffer;
@@ -160,7 +154,6 @@ public class SHLGL {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         initShaders();
         setResolution(640, 480);
-        this.margins = new MarginHandler();
         this.eventBus = new EventBus();
         this.timer = new TickTimer();
         this.running = true;
@@ -187,8 +180,6 @@ public class SHLGL {
         GL20.glEnableVertexAttribArray(loc);
         loc = GL20.glGetUniformLocation(shaderProg, "transformKernel");
         trans = new ShaderProperty.Mat4(shaderProg, loc);
-        loc = GL20.glGetUniformLocation(shaderProg, "tex");
-        texProp = new TexConsumer(shaderProg, loc);
         loc = GL20.glGetUniformLocation(shaderProg, "colourTransform");
         colourTrans = new ShaderProperty.Vec4(shaderProg, loc);
     }
@@ -242,7 +233,8 @@ public class SHLGL {
      * @param tickRate The tick rate, in ticks per second.
      */
     public void runMainLoop(int tickRate) {
-        renderBuffer = new RenderBuffer(trans, colourTrans, texProp);
+        margins = new MarginHandler();
+        renderBuffer = new RenderBuffer(trans, colourTrans, margins);
         timer.setTickRate(tickRate);
         timer.begin();
         tickCount = 0;
@@ -271,7 +263,6 @@ public class SHLGL {
         try (Pooled<Vector2I> size = gameWindow.getSize()) {
             margins.update(size.get(), width, height);
         }
-        renderBuffer.refresh(width, height);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         eventBus.post(new RenderEvent(renderBuffer));
         renderBuffer.flush();

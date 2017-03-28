@@ -32,7 +32,7 @@ public abstract class ShaderProperty {
      * Sets the value of this shader property.
      * @param values The new values to populate the property with.
      */
-    public abstract void set(float[] values);
+    public abstract void set(float... values);
 
     /**
      * Represents a <code>vec4</code> uniform.
@@ -49,7 +49,7 @@ public abstract class ShaderProperty {
         }
 
         @Override
-        public void set(float[] values) {
+        public void set(float... values) {
             GL20.glUniform4fv(propInd, values);
         }
 
@@ -70,7 +70,7 @@ public abstract class ShaderProperty {
         }
 
         @Override
-        public void set(float[] values) {
+        public void set(float... values) {
             GL20.glUniformMatrix4fv(propInd, true, values);
         }
 

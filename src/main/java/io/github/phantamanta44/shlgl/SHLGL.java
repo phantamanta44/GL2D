@@ -243,7 +243,7 @@ public class SHLGL {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         eventBus.post(new RenderEvent(renderBuffer));
         renderBuffer.flush();
-        // TODO Make call to glDrawArrays
+        GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
         GLFW.glfwSwapBuffers(windowHandle);
     }
 

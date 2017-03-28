@@ -4,17 +4,17 @@ package io.github.phantamanta44.shlgl.util.render;
  * Represents a <code>uniform</code> property of a shader.
  * @author Evan Geng
  */
-public abstract class ShaderProperty<T> {
+public class ShaderProperty {
 
     /**
      * The shader program containing this property.
      */
-    private final int shaderProg;
+    protected final int shaderProg;
 
     /**
      * The location of this property.
      */
-    private final int propInd;
+    protected final int propInd;
 
     /**
      * Creates a ShaderProperty for the given shader and property index.
@@ -28,8 +28,10 @@ public abstract class ShaderProperty<T> {
 
     /**
      * Sets the value of this shader property.
-     * @param value The new value.
+     * @param values The new values to populate the property with.
      */
-    public abstract void set(T value);
+    public void set(float[] values) {
+
+    }
 
 }

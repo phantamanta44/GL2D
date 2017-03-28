@@ -10,6 +10,7 @@ import io.github.phantamanta44.shlgl.util.io.InputStreamUtils;
 import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
 import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import io.github.phantamanta44.shlgl.util.render.ShaderUtils;
+import io.github.phantamanta44.shlgl.util.render.TexConsumer;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -20,8 +21,6 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.LinkedList;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -81,9 +80,19 @@ public class SHLGL {
     private int shaderProg;
 
     /**
-     * The <code>uniform</code>s exposed by the shader program.
+     * The transformation kernel uniform.
      */
-    private Collection<ShaderProperty<?>> uniforms;
+    private ShaderProperty trans;
+
+    /**
+     * The colour modifier uniform.
+     */
+    private ShaderProperty colourTrans;
+
+    /**
+     * The texture sampler uniform.
+     */
+    private TexConsumer texProp;
 
     /**
      * The address of the VBO used for rendering.
@@ -141,18 +150,22 @@ public class SHLGL {
             int vert = ShaderUtils.compileShader(GL20.GL_VERTEX_SHADER, InputStreamUtils.readAsString(vertIn));
             int frag = ShaderUtils.compileShader(GL20.GL_FRAGMENT_SHADER, InputStreamUtils.readAsString(fragIn));
             shaderProg = ShaderUtils.createProgram(vert, frag);
+            GL20.glUseProgram(shaderProg);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to initialize shaders!", e);
         }
         int loc = GL20.glGetAttribLocation(shaderProg, "posXY");
-        GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, Float.BYTES * 4, 0);
         GL20.glEnableVertexAttribArray(loc);
         loc = GL20.glGetAttribLocation(shaderProg, "posUV");
-        GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(loc, 2, GL11.GL_FLOAT, false, Float.BYTES * 4, Float.BYTES * 2);
         GL20.glEnableVertexAttribArray(loc);
-        uniforms = new LinkedList<>();
         loc = GL20.glGetUniformLocation(shaderProg, "transformKernel");
-        // FIXME finish
+        trans = new ShaderProperty(shaderProg, loc);
+        loc = GL20.glGetUniformLocation(shaderProg, "tex");
+        texProp = new TexConsumer(shaderProg, loc);
+        loc = GL20.glGetUniformLocation(shaderProg, "colourTransform");
+        colourTrans = new ShaderProperty(shaderProg, loc);
     }
 
     /**
@@ -222,9 +235,10 @@ public class SHLGL {
      */
     private void render() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        RenderBuffer buffer = new RenderBuffer(this);
+        RenderBuffer buffer = new RenderBuffer(trans, colourTrans, texProp);
         eventBus.post(new RenderEvent(buffer));
-        // TODO Buffer data from RenderBuffer
+        buffer.flush();
+        // TODO Make call to glDrawArrays
         GLFW.glfwSwapBuffers(windowHandle);
     }
 

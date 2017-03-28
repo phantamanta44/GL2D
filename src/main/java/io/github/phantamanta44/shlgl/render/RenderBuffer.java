@@ -1,7 +1,11 @@
 package io.github.phantamanta44.shlgl.render;
 
-import io.github.phantamanta44.shlgl.SHLGL;
+import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
+import io.github.phantamanta44.shlgl.util.render.TexConsumer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A graphics buffer containing instructions for rendering a frame.
@@ -10,19 +14,48 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class RenderBuffer {
 
     /**
-     * The parent SHLGL instance.
+     * The queue of actions to run upon buffer flush.
      */
-    private final SHLGL shlgl;
+    private final List<Runnable> actions;
+
+    /**
+     * The vertex transformation kernel.
+     */
+    private final ShaderProperty trans;
+
+    /**
+     * The colour transformation vector.
+     */
+    private final ShaderProperty colour;
+
+    /**
+     * The texture sampler.
+     */
+    private final TexConsumer tex;
 
     /**
      * Creates a render buffer.
-     * @param shlgl The SHLGL instance under which this buffer should run.
+     * @param trans The transformation kernel uniform.
+     * @param colour The colour modifier uniform.
+     * @param tex The texture sampler uniform.
      */
-    public RenderBuffer(SHLGL shlgl) {
-        this.shlgl = shlgl;
+    public RenderBuffer(ShaderProperty trans, ShaderProperty colour, TexConsumer tex) {
+        this.actions = new LinkedList<>();
+        this.trans = trans;
+        this.colour = colour;
+        this.tex = tex;
     }
 
-    // TODO Drawing methods
+    /**
+     * Draws a textured rectangle.
+     * @param x The rectangle's x-coordinate.
+     * @param y The rectangle's y-coordinate.
+     * @param width The rectangle's width.
+     * @param height The rectangle's height.
+     */
+    public void drawRect(float x, float y, float width, float height) {
+        throw new NotImplementedException(); // TODO Implement
+    }
 
     /**
      * Sets the transformation colour.
@@ -31,8 +64,15 @@ public class RenderBuffer {
      * @param b The blue component.
      * @param a The alpha component.
      */
-    public void color4F(float r, float g, float b, float a) {
+    public void coloru4F(float r, float g, float b, float a) {
         throw new NotImplementedException(); // TODO Implement
+    }
+
+    /**
+     * Runs all the buffered actions.
+     */
+    public void flush() {
+        actions.forEach(Runnable::run);
     }
 
 }

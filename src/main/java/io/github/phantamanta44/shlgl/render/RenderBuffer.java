@@ -2,6 +2,7 @@ package io.github.phantamanta44.shlgl.render;
 
 import io.github.phantamanta44.shlgl.texture.TextureManager;
 import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -64,14 +65,15 @@ public class RenderBuffer {
         float u2 = (u + texW) / a, v2 = (v + texH) / b;
         float x1 = margins.computeX(x), y1 = margins.computeY(y);
         float x2 = margins.computeX(x + width), y2 = margins.computeY(y + height);
-        buffer(() ->
-            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[] {
+        buffer(() -> {
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[]{
                     x2, y1, u2, v1,
                     x1, y1, u1, v1,
                     x2, y2, u2, v2,
                     x1, y2, u1, v2
-            }, GL15.GL_STREAM_DRAW)
-        );
+            }, GL15.GL_STREAM_DRAW);
+            GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
+        });
     }
 
     /**
@@ -84,14 +86,15 @@ public class RenderBuffer {
     public void drawRect(float x, float y, float width, float height) {
         float x1 = margins.computeX(x), y1 = margins.computeY(y);
         float x2 = margins.computeX(x + width), y2 = margins.computeY(y + height);
-        buffer(() ->
-                GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[] {
-                        x2, y1, 1F, 0F,
-                        x1, y1, 0F, 0F,
-                        x2, y2, 1F, 1F,
-                        x1, y2, 0F, 1F
-                }, GL15.GL_STREAM_DRAW)
-        );
+        buffer(() -> {
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[]{
+                    x2, y1, 1F, 0F,
+                    x1, y1, 0F, 0F,
+                    x2, y2, 1F, 1F,
+                    x1, y2, 0F, 1F
+            }, GL15.GL_STREAM_DRAW);
+            GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
+        });
     }
 
     /**
@@ -101,10 +104,28 @@ public class RenderBuffer {
      * @param x2 Point B's x-coordinate.
      * @param y2 Point B's y-coordinate.
      * @param width The thickness of the line.
+     * @param u The x texture coordinate.
+     * @param v The y texture coordinate.
+     * @param texW The texture width.
+     * @param texH The texture height.
+     */
+    public void drawLine(float x, float y, float x2, float y2, float width, float u, float v, float texW, float texH) {
+        throw new NotImplementedException(); // TODO Implement
+    }
+
+    /**
+     * Draws a textured line, assuming the entire texture is used.
+     * @param x Point A's x-coordinate.
+     * @param y Point A's y-coordinate.
+     * @param x2 Point B's x-coordinate.
+     * @param y2 Point B's y-coordinate.
+     * @param width The thickness of the line.
      */
     public void drawLine(float x, float y, float x2, float y2, float width) {
         throw new NotImplementedException(); // TODO Implement
     }
+
+    // TODO Transformations
 
     /**
      * Sets the transformation colour.

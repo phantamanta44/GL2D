@@ -105,6 +105,23 @@ public class Matrix4F implements IShared {
     }
 
     /**
+     * Multiplies this matrix by another one.
+     * @param o The other matrix.
+     */
+    public void multiply(Matrix4F o) {
+        Matrix4F result = new Matrix4F();
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                float sum = 0F;
+                for (int i = 0; i < 4; i++)
+                    sum += get(r, i) * o.get(i, c);
+                result.put(r, c, sum);
+            }
+        }
+        readArray(result.asArray());
+    }
+
+    /**
      * Returns this matrix as a row-major sequential array representation.
      * @return The array of values.
      */
@@ -116,7 +133,7 @@ public class Matrix4F implements IShared {
      * Sets the values of this matrix from an array.
      * @param vals The array of values.
      */
-    private void readArray(float[] vals) {
+    public void readArray(float[] vals) {
         System.arraycopy(vals, 0, values, 0, vals.length);
         for (int i = vals.length; i < 16; i++)
             values[i] = 0;

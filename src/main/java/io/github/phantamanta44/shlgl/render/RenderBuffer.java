@@ -1,6 +1,9 @@
 package io.github.phantamanta44.shlgl.render;
 
 import io.github.phantamanta44.shlgl.texture.TextureManager;
+import io.github.phantamanta44.shlgl.util.collection.StackNode;
+import io.github.phantamanta44.shlgl.util.math.Matrix4F;
+import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -16,17 +19,22 @@ import java.util.List;
 public class RenderBuffer {
 
     /**
+     * Pi, represented as a float.
+     */
+    private static final float PI_FLOAT = 3.14159265F;
+
+    /**
      * The queue of actions to run upon buffer flush.
      */
     private final List<Runnable> actions;
 
     /**
-     * The vertex transformation kernel.
+     * The vertex transformation kernel property.
      */
     private final ShaderProperty.Mat4 trans;
 
     /**
-     * The colour transformation vector.
+     * The colour transformation vector property.
      */
     private final ShaderProperty.Vec4 colour;
 
@@ -34,6 +42,16 @@ public class RenderBuffer {
      * The rendering margin handler.
      */
     private final MarginHandler margins;
+
+    /**
+     * The transformation kernel.
+     */
+    private Pooled<Matrix4F> kernel;
+
+    /**
+     * The transformation kernel state stack.
+     */
+    private StackNode<float[]> kernelStack;
 
     /**
      * Creates a render buffer.
@@ -46,6 +64,8 @@ public class RenderBuffer {
         this.trans = trans;
         this.colour = colour;
         this.margins = margins;
+        this.kernel = Matrix4F.ident();
+        this.kernelStack = new StackNode<>();
     }
 
     /**
@@ -125,10 +145,82 @@ public class RenderBuffer {
         throw new NotImplementedException(); // TODO Implement
     }
 
-    // TODO Transformations
+    /**
+     * Pushes the current transformation kernel to the stack, storing its state.
+     */
+    public void pushMatrix() {
+        kernelStack = kernelStack.extend(kernel.get().asArray());
+    }
 
     /**
-     * Sets the transformation colour.
+     * Pops the topmost element of the transformation kernel stack and restores the stored state.
+     */
+    public void popMatrix() {
+        if (kernelStack.hasParent()) {
+            kernel.get().readArray(kernelStack.getValue());
+            kernelStack = kernelStack.getParent();
+        }
+    }
+
+    /**
+     * Scales the render by a factor.
+     * @param x The horizontal scaling factor.
+     * @param y The vertical scaling factor.
+     */
+    public void scale(float x, float y) {
+        multiply(
+                x, 0F, 0F, 0F,
+                0F, y, 0F, 0F,
+                0F, 0F, 1F, 0F,
+                0F, 0F, 0F, 1F
+        );
+    }
+
+    /**
+     * Translates the render by an offset.
+     * @param x The x offset.
+     * @param y The y offset.
+     */
+    public void translate(float x, float y) {
+        multiply(
+                1F, 0F, 0F, x,
+                0F, 1F, 0F, y,
+                0F, 0F, 1F, 0F,
+                0F, 0F, 0F, 1F
+        );
+    }
+
+    /**
+     * Rotates the render by an angle.
+     * @param degrees The angle of rotation, in degrees.
+     * @param x The x component of the rotation axis vector.
+     * @param y The y component of the rotation axis vector.
+     */
+    public void rotate(float degrees, float x, float y) {
+        float radians = degrees * PI_FLOAT / 180F;
+        float sin = (float)Math.sin(radians), cos = (float)Math.cos(radians);
+        multiply(
+                x * x * (1F - cos) + cos, y * x * (1F - cos), y * sin, 0F,
+                x * y * (1F - cos), y * y * (1F - cos) + cos, -x * sin, 0F,
+                -y * sin, x * sin, cos, 0F,
+                0F, 0F, 0F, 1F
+        );
+    }
+
+    /**
+     * Multiplies the transformation kernel by the given matrix.
+     * @param values The values of the multiplier matrix.
+     */
+    private void multiply(float... values) {
+        buffer(() -> {
+            try (Pooled<Matrix4F> mat = Matrix4F.of(values)) {
+                kernel.get().multiply(mat.get());
+            }
+        });
+    }
+
+    /**
+     * Sets the colour modifier.
      * @param r The red component.
      * @param g The green component.
      * @param b The blue component.
@@ -152,6 +244,8 @@ public class RenderBuffer {
     public void flush() {
         actions.forEach(Runnable::run);
         actions.clear();
+        kernel.free();
+        kernel = Matrix4F.ident();
     }
 
 }

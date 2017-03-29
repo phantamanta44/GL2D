@@ -1,9 +1,15 @@
 package io.github.phantamanta44.shlgl.audio;
 
+import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
 import io.github.phantamanta44.shlgl.util.memory.ResourcePool;
 import org.lwjgl.openal.*;
 import org.lwjgl.system.MemoryStack;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.LinkedList;
@@ -62,6 +68,42 @@ public class AudioManager {
         AL10.alDeleteBuffers(createdBufs.stream().mapToInt(buf -> buf.buf).toArray());
         AL10.alDeleteSources(createdBufs.stream().mapToInt(buf -> buf.src).toArray());
         ALC.destroy();
+    }
+
+    private static byte[] load(String path) {
+        try (AudioInputStream ais = AudioSystem.getAudioInputStream(ResourceUtils.getStream(path))) {
+            AudioFormat fmt = ais.getFormat();
+            int chanFmt = -1;
+            switch (fmt.getChannels()) {
+                case 1:
+                    switch (fmt.getSampleSizeInBits()) {
+                        case 8:
+                            chanFmt = AL10.AL_FORMAT_MONO8;
+                            break;
+                        case 16:
+                            chanFmt = AL10.AL_FORMAT_MONO16;
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (fmt.getSampleSizeInBits()) {
+                        case 8:
+                            chanFmt = AL10.AL_FORMAT_STEREO8;
+                            break;
+                        case 16:
+                            chanFmt = AL10.AL_FORMAT_STEREO16;
+                            break;
+                    }
+                    break;
+            }
+            if (chanFmt == -1)
+                throw new IllegalStateException("Invalid audio format!");
+            // TODO Read audio and return
+        } catch (UnsupportedAudioFileException e) {
+            throw new IllegalArgumentException("Unsupported audio format!", e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // TODO Audio play - create buffer and play it

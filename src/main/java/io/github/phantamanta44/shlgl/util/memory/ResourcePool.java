@@ -47,7 +47,10 @@ public class ResourcePool<T extends IShared> {
      */
     public void free(Pooled<T> res) {
         if (res != null && !res.isFree()) {
-            free = free.extend(res);
+            if (free != null)
+                free = free.extend(res);
+            else
+                free = new StackNode<>(res);
             res.setFree(true);
             res.get().onFree();
         }

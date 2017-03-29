@@ -62,6 +62,8 @@ public class Window implements IHandled {
             GLFW.glfwGetWindowSize(handle, x, y);
             width = x.get();
             height = y.get();
+            x.flip();
+            y.flip();
             GLFW.glfwGetWindowPos(handle, x, y);
             posX = x.get();
             posY = y.get();

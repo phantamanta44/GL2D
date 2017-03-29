@@ -80,6 +80,7 @@
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
             <version>3.1.1</version>
+            <classifier>natives-${lwjgl.nativeos}</classifier>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -88,8 +89,31 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-opengl</artifactId>
+            <version>3.1.1</version>
+            <classifier>natives-${lwjgl.nativeos}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-glfw</artifactId>
             <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-glfw</artifactId>
+            <version>3.1.1</version>
+            <classifier>natives-${lwjgl.nativeos}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-openal</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-openal</artifactId>
+            <version>3.1.1</version>
+            <classifier>natives-${lwjgl.nativeos}</classifier>
         </dependency>
         <dependency>
             <groupId>org.l33tlabs.twl</groupId>
@@ -97,4 +121,40 @@
             <version>1.0</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.nativeos>windows</lwjgl.nativeos>
+            </properties>
+        </profile>
+        <profile>
+            <id>OSX</id>
+            <activation>
+                <os>
+                    <family>Mac</family>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.nativeos>osx</lwjgl.nativeos>
+            </properties>
+        </profile>
+        <profile>
+            <id>Linux</id>
+            <activation>
+                <os>
+                    <family>Unix</family>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.nativeos>linux</lwjgl.nativeos>
+            </properties>
+        </profile>
+    </profiles>
 </project>

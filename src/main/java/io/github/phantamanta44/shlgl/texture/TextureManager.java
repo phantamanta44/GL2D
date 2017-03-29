@@ -91,6 +91,15 @@ public class TextureManager {
     }
 
     /**
+     * Retrieves the TextureInfo instance for a texture.
+     * @param path The path to the texture.
+     * @return The info, if it exists.
+     */
+    public static TextureInfo getTextureInfo(String path) {
+        return getTextureInfo(getTextureId(path));
+    }
+
+    /**
      * Retrieves the currently bound texture info.
      * @return The texture.
      */

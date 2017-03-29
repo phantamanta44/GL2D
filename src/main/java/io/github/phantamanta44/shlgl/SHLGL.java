@@ -147,8 +147,8 @@ public class SHLGL {
         this.windowHandle = GLFW.glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
         if (windowHandle == NULL)
             throw new IllegalStateException("Failed to initialize game window!");
-        this.gameWindow = new Window(windowHandle);
         GLFW.glfwMakeContextCurrent(windowHandle);
+        this.gameWindow = new Window(windowHandle);
         GL.createCapabilities();
         vbo = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
@@ -250,6 +250,7 @@ public class SHLGL {
             } catch (Exception e) {
                 System.err.println("Exception thrown in main loop!");
                 e.printStackTrace();
+                running = false;
             }
         }
         timer.stop();

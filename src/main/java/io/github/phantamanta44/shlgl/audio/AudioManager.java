@@ -1,17 +1,29 @@
 package io.github.phantamanta44.shlgl.audio;
 
+import io.github.phantamanta44.shlgl.util.memory.ResourcePool;
 import org.lwjgl.openal.*;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Handles audio loading and playback.
  * @author Evan Geng
  */
 public class AudioManager {
+
+    /**
+     * The pool of audio buffers.
+     */
+    private static ResourcePool<AudioBuffer> bufPool = new ResourcePool<>(AudioBuffer::new);
+
+    /**
+     * A collection of all created buffers.
+     */
+    private static List<AudioBuffer> createdBufs = new LinkedList<>();
 
     /**
      * Initializes audio device and buffers.
@@ -21,6 +33,7 @@ public class AudioManager {
         ALCCapabilities devCaps = ALC.createCapabilities(dev);
         if (!devCaps.OpenALC10)
             throw new IllegalArgumentException("Unsupported audio device!");
+
         long ctx;
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer attribs = stack.mallocInt(16);
@@ -35,9 +48,24 @@ public class AudioManager {
         if (!ALC10.alcMakeContextCurrent(ctx))
             throw new IllegalArgumentException("Failed to initialize ALC context!");
         AL.createCapabilities(devCaps);
-        // TODO Initialize audio buffers
+
+        AL10.alListener3f(AL10.AL_VELOCITY, 0f, 0f, 0f);
+        AL10.alListener3f(AL10.AL_ORIENTATION, 0f, 0f, -1f);
+
+        bufPool.get().free();
     }
 
-    // TODO Finish implementation
+    /**
+     * Cleans up OpenAL.
+     */
+    public static void destruct() {
+        AL10.alDeleteBuffers(createdBufs.stream().mapToInt(buf -> buf.buf).toArray());
+        AL10.alDeleteSources(createdBufs.stream().mapToInt(buf -> buf.src).toArray());
+        ALC.destroy();
+    }
+
+    // TODO Audio play - create buffer and play it
+
+    // TODO Maybe assign IDs to buffers so you can reference one and stop playback?
 
 }

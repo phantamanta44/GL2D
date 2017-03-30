@@ -1,6 +1,8 @@
 package io.github.phantamanta44.shlgl.audio;
 
+import io.github.phantamanta44.shlgl.util.io.InputStreamUtils;
 import io.github.phantamanta44.shlgl.util.io.ResourceUtils;
+import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import io.github.phantamanta44.shlgl.util.memory.ResourcePool;
 import org.lwjgl.openal.*;
 import org.lwjgl.system.MemoryStack;
@@ -12,8 +14,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Handles audio loading and playback.
@@ -29,7 +31,7 @@ public class AudioManager {
     /**
      * A collection of all created buffers.
      */
-    private static List<AudioBuffer> createdBufs = new LinkedList<>();
+    private static Set<AudioBuffer> createdBufs = new HashSet<>();
 
     /**
      * Initializes audio device and buffers.
@@ -70,7 +72,12 @@ public class AudioManager {
         ALC.destroy();
     }
 
-    private static byte[] load(String path) {
+    /**
+     * Loads raw audio data from a path.
+     * @param path The audio file's path.
+     * @return The audio data.
+     */
+    public static SoundData load(String path) {
         try (AudioInputStream ais = AudioSystem.getAudioInputStream(ResourceUtils.getStream(path))) {
             AudioFormat fmt = ais.getFormat();
             int chanFmt = -1;
@@ -98,7 +105,11 @@ public class AudioManager {
             }
             if (chanFmt == -1)
                 throw new IllegalStateException("Invalid audio format!");
-            // TODO Read audio and return
+            return new SoundData(
+                    InputStreamUtils.readAsBytes(ais),
+                    chanFmt,
+                    fmt.getSampleRate()
+            );
         } catch (UnsupportedAudioFileException e) {
             throw new IllegalArgumentException("Unsupported audio format!", e);
         } catch (IOException e) {
@@ -106,8 +117,17 @@ public class AudioManager {
         }
     }
 
-    // TODO Audio play - create buffer and play it
-
-    // TODO Maybe assign IDs to buffers so you can reference one and stop playback?
+    /**
+     * Plays a sound on a free buffer.
+     * @param sound The sound to play.
+     * @return The buffer the sound is playing from.
+     */
+    public static AudioBuffer play(SoundData sound) {
+        Pooled<AudioBuffer> buf = bufPool.get();
+        createdBufs.add(buf.get());
+        buf.get().buffer(sound);
+        buf.get().play();
+        return buf.get(); // TODO Free buffer on audio end
+    }
 
 }

@@ -30,14 +30,26 @@ public class AudioBuffer implements IShared {
         AL10.alSource3f(src, AL10.AL_VELOCITY, 0F, 0F, 0F);
     }
 
+    /**
+     * Begins playback from this buffer.
+     */
     public void play() {
         AL10.alSourcePlay(src);
     }
 
+    /**
+     * Stops playback from this buffer and frees it.
+     */
     public void stop() {
         AL10.alSourceStop(src);
     }
 
-    // TODO Audio buffering (and maybe a loading util)
+    /**
+     * Buffers audio data to be played.
+     * @param sound The sound to buffer.
+     */
+    public void buffer(SoundData sound) {
+        // TODO Implement
+    }
 
 }

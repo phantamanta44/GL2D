@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.render;
+package io.github.phantamanta44.shlgl.graphics.render;
 
 import io.github.phantamanta44.shlgl.util.math.Vector2I;
 

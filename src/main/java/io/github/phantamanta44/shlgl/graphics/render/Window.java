@@ -1,6 +1,5 @@
-package io.github.phantamanta44.shlgl.render;
+package io.github.phantamanta44.shlgl.graphics.render;
 
-import io.github.phantamanta44.shlgl.model.IHandled;
 import io.github.phantamanta44.shlgl.util.math.Vector2I;
 import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import org.lwjgl.glfw.GLFW;
@@ -14,7 +13,7 @@ import java.nio.IntBuffer;
  * A window in a desktop environment.
  * @author Evan Geng
  */
-public class Window implements IHandled {
+public class Window {
 
     /**
      * The window's handle.
@@ -70,7 +69,10 @@ public class Window implements IHandled {
         }
     }
 
-    @Override
+    /**
+     * Gets the window handle.
+     * @return The window's handle.
+     */
     public long getHandle() {
         return handle;
     }

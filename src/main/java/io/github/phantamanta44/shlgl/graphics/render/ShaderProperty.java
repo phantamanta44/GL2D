@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.util.render;
+package io.github.phantamanta44.shlgl.graphics.render;
 
 import org.lwjgl.opengl.GL20;
 

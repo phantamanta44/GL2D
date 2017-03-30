@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.event;
+package io.github.phantamanta44.shlgl.engine.event;
 
 /**
  * Delineates the levels of listener priority.

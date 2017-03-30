@@ -1,6 +1,6 @@
-package io.github.phantamanta44.shlgl.event.impl;
+package io.github.phantamanta44.shlgl.engine.event.impl;
 
-import io.github.phantamanta44.shlgl.event.Event;
+import io.github.phantamanta44.shlgl.engine.event.Event;
 
 /**
  * Posted every game tick. Game logic should be handled in listeners.

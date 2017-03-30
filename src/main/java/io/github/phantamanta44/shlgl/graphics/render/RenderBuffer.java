@@ -1,10 +1,9 @@
-package io.github.phantamanta44.shlgl.render;
+package io.github.phantamanta44.shlgl.graphics.render;
 
-import io.github.phantamanta44.shlgl.texture.TextureManager;
+import io.github.phantamanta44.shlgl.graphics.texture.TextureManager;
 import io.github.phantamanta44.shlgl.util.collection.StackNode;
 import io.github.phantamanta44.shlgl.util.math.Matrix4F;
 import io.github.phantamanta44.shlgl.util.memory.Pooled;
-import io.github.phantamanta44.shlgl.util.render.ShaderProperty;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.texture;
+package io.github.phantamanta44.shlgl.graphics.texture;
 
 /**
  * POJO that provides texture metadata.

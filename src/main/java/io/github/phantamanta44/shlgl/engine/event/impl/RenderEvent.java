@@ -1,7 +1,7 @@
-package io.github.phantamanta44.shlgl.event.impl;
+package io.github.phantamanta44.shlgl.engine.event.impl;
 
-import io.github.phantamanta44.shlgl.event.Event;
-import io.github.phantamanta44.shlgl.render.RenderBuffer;
+import io.github.phantamanta44.shlgl.engine.event.Event;
+import io.github.phantamanta44.shlgl.graphics.render.RenderBuffer;
 
 /**
  * Posted every render tick. Game renders should be handled in listeners.

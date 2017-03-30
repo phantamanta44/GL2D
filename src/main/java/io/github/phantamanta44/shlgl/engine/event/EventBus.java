@@ -1,7 +1,7 @@
-package io.github.phantamanta44.shlgl.event;
+package io.github.phantamanta44.shlgl.engine.event;
 
-import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
-import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
+import io.github.phantamanta44.shlgl.engine.event.impl.GameTickEvent;
+import io.github.phantamanta44.shlgl.engine.event.impl.RenderEvent;
 
 import java.util.HashMap;
 import java.util.Map;

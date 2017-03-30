@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.game;
+package io.github.phantamanta44.shlgl.engine;
 
 /**
  * Timer that schedules game ticks.

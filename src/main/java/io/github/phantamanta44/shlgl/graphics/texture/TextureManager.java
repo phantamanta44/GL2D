@@ -1,4 +1,4 @@
-package io.github.phantamanta44.shlgl.texture;
+package io.github.phantamanta44.shlgl.graphics.texture;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.BufferUtils;

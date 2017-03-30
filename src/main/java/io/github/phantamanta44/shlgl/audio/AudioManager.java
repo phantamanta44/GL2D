@@ -159,7 +159,9 @@ public class AudioManager {
      * Updates the sound buffers, freeing any that are unused. For internal use only!
      */
     public static void tick() {
-        // TODO Free unused buffers
+        bufPool.stream()
+                .filter(buf -> AL10.alGetSourcei(buf.get().src, AL10.AL_SOURCE_STATE) == AL10.AL_STOPPED)
+                .forEach(Pooled::free);
     }
 
 }

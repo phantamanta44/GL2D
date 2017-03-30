@@ -1,5 +1,6 @@
 package io.github.phantamanta44.shlgl;
 
+import io.github.phantamanta44.shlgl.audio.AudioManager;
 import io.github.phantamanta44.shlgl.event.EventBus;
 import io.github.phantamanta44.shlgl.event.impl.GameTickEvent;
 import io.github.phantamanta44.shlgl.event.impl.RenderEvent;
@@ -157,7 +158,7 @@ public class SHLGL {
         this.eventBus = new EventBus();
         this.timer = new TickTimer();
         this.running = true;
-    } // TODO Audio
+    }
 
     /**
      * Initializes the default vertex and fragment shaders.
@@ -268,6 +269,7 @@ public class SHLGL {
         eventBus.post(new RenderEvent(renderBuffer));
         renderBuffer.flush();
         GLFW.glfwSwapBuffers(windowHandle);
+        AudioManager.tick();
     }
 
 }

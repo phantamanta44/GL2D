@@ -14,7 +14,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,6 +34,11 @@ public class AudioManager {
      * A collection of all created buffers.
      */
     private static Set<AudioBuffer> createdBufs = new HashSet<>();
+
+    /**
+     * The cache of all loaded sounds.
+     */
+    private static Map<String, SoundData> soundCache = new HashMap<>();
 
     /**
      * Initializes audio device and buffers.
@@ -73,11 +80,20 @@ public class AudioManager {
     }
 
     /**
+     * Retrieves the sound data associated with a path, loading it if it's not cached.
+     * @param path The path to the audio file.
+     * @return The audio data.
+     */
+    public static SoundData getSound(String path) {
+        return soundCache.computeIfAbsent(path, AudioManager::load);
+    }
+
+    /**
      * Loads raw audio data from a path.
      * @param path The audio file's path.
      * @return The audio data.
      */
-    public static SoundData load(String path) {
+    private static SoundData load(String path) {
         try (AudioInputStream ais = AudioSystem.getAudioInputStream(ResourceUtils.getStream(path))) {
             AudioFormat fmt = ais.getFormat();
             int chanFmt = -1;
@@ -127,7 +143,23 @@ public class AudioManager {
         createdBufs.add(buf.get());
         buf.get().buffer(sound);
         buf.get().play();
-        return buf.get(); // TODO Free buffer on audio end
+        return buf.get();
+    }
+
+    /**
+     * Plays a sound on a free buffer. It's preferred to use {@link #play(SoundData)} if possible.
+     * @param path The path to the sound.
+     * @return The buffer the sound is playing from.
+     */
+    public static AudioBuffer play(String path) {
+        return play(getSound(path));
+    }
+
+    /**
+     * Updates the sound buffers, freeing any that are unused. For internal use only!
+     */
+    public static void tick() {
+        // TODO Free unused buffers
     }
 
 }

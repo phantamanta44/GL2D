@@ -3,6 +3,8 @@ package io.github.phantamanta44.shlgl.audio;
 import io.github.phantamanta44.shlgl.util.memory.IShared;
 import org.lwjgl.openal.AL10;
 
+import java.nio.ByteBuffer;
+
 /**
  * A paired audio buffer and source.
  * @author Evan Geng
@@ -31,9 +33,17 @@ public class AudioBuffer implements IShared {
     }
 
     /**
+     * Buffers audio data to be played.
+     * @param sound The sound to buffer.
+     */
+    void buffer(SoundData sound) {
+        AL10.alBufferData(buf, sound.format, ByteBuffer.wrap(sound.data), sound.sampleRate);
+    }
+
+    /**
      * Begins playback from this buffer.
      */
-    public void play() {
+    void play() {
         AL10.alSourcePlay(src);
     }
 
@@ -42,14 +52,6 @@ public class AudioBuffer implements IShared {
      */
     public void stop() {
         AL10.alSourceStop(src);
-    }
-
-    /**
-     * Buffers audio data to be played.
-     * @param sound The sound to buffer.
-     */
-    public void buffer(SoundData sound) {
-        // TODO Implement
     }
 
 }

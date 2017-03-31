@@ -30,6 +30,11 @@ public abstract class GraphNode {
      * This graph node's children.
      */
     protected List<GraphNode> children;
+
+    /**
+     * The node's alive state.
+     */
+    private boolean alive = true;
     
     /**
      * Creates a graph node at the given coordinates.
@@ -91,6 +96,26 @@ public abstract class GraphNode {
     public void addChild(GraphNode child) {
         children.add(child);
     }
+
+    /**
+     * Checks whether this node is still alive. If the node dies, all its children also die and are removed from the graph.
+     * @return Whether this node is still alive.
+     */
+    public boolean isAlive() {
+        return alive;
+    }
+
+    /**
+     * Kills this node and all its children, removing them from the graph.
+     */
+    public void kill() {
+        alive = false;
+    }
+
+    /**
+     * Updates the graph node's state.
+     */
+    public abstract void tick();
 
     /**
      * Renders the game entity represented by this graph node.

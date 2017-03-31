@@ -18,6 +18,36 @@ public class SceneGraph extends GraphNode {
     }
 
     /**
+     * Ticks all the nodes in this scene graph.
+     */
+    @Override
+    public void tick() {
+        children.forEach(SceneGraph::tick);
+    }
+
+    /**
+     * Recursively ticks a node and all its children.
+     * @param node The node to tick.
+     */
+    private static void tick(GraphNode node) {
+        node.tick();
+        if (node.isAlive())
+            node.children.forEach(SceneGraph::tick);
+        else
+            kill(node);
+    }
+
+    /**
+     * Recursively kills a node and all its children.
+     * @param node The node to kill.
+     */
+    private static void kill(GraphNode node) {
+        node.kill();
+        node.parent.children.remove(node);
+        node.children.forEach(SceneGraph::kill);
+    }
+
+    /**
      * Renders all the nodes in this scene graph.
      * @param buf The render buffer to render with.
      */

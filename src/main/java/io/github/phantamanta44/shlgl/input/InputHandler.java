@@ -3,10 +3,7 @@ package io.github.phantamanta44.shlgl.input;
 import io.github.phantamanta44.shlgl.SHLGL;
 import io.github.phantamanta44.shlgl.engine.event.impl.ClickEvent;
 import io.github.phantamanta44.shlgl.engine.event.impl.KeyEvent;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.*;
 
 /**
  * Handles input and dispatches relevant events.
@@ -36,8 +33,8 @@ public class InputHandler {
     public InputHandler(SHLGL shlgl) {
         this.shlgl = shlgl;
         this.keyboard = new Keyboard();
-        this.cursor = new Cursor();
         long window = shlgl.getGameWindow().getHandle();
+        this.cursor = new Cursor(window);
         GLFW.glfwSetKeyCallback(window, new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
@@ -58,6 +55,12 @@ public class InputHandler {
                 cursor.updatePos((int)posX, (int)posY);
             }
         });
+        GLFW.glfwSetScrollCallback(window, new GLFWScrollCallback() {
+            @Override
+            public void invoke(long window, double x, double y) {
+                cursor.updateScroll((int)x, (int)y);
+            }
+        })
     }
 
     /**

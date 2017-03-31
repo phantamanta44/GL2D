@@ -11,6 +11,11 @@ import org.lwjgl.glfw.GLFW;
 public class Cursor {
 
     /**
+     * The game window's handle.
+     */
+    private final long windowHandle;
+
+    /**
      * The mouse button state bitmask. The rightmost bit is left, followed by right, then middle.
      */
     private int btnState;
@@ -28,7 +33,8 @@ public class Cursor {
     /**
      * Instantiates the cursor.
      */
-    public Cursor() {
+    Cursor(long windowHandle) {
+        this.windowHandle = windowHandle;
         this.btnState = this.posX = this.posY = 0;
     }
 
@@ -37,7 +43,7 @@ public class Cursor {
      * @param button The button in question.
      * @param action The action performed on the button.
      */
-    public void updateButtonState(int button, int action) {
+    void updateButtonState(int button, int action) {
         switch (action) {
             case GLFW.GLFW_PRESS:
                 btnState |= (1 << button);
@@ -53,9 +59,18 @@ public class Cursor {
      * @param posX The x coordinate.
      * @param posY The y coordinate.
      */
-    public void updatePos(int posX, int posY) {
+    void updatePos(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
+    }
+
+    /**
+     * Updates the scroll wheel state.
+     * @param x The x offset scrolled.
+     * @param y The y offset scrolled.
+     */
+    void updateScroll(int x, int y) {
+        // TODO Implement
     }
 
     /**
@@ -75,6 +90,13 @@ public class Cursor {
         return Vector2I.of(posX, posY);
     }
 
-    // TODO Scroll wheel
+    /**
+     * Sets the mouse cursor position.
+     * @param x The new x value.
+     * @param y The new y value.
+     */
+    public void setMousePosition(int x, int y) {
+        GLFW.glfwSetCursorPos(windowHandle, x, y);
+    }
 
 }

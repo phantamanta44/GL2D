@@ -40,6 +40,14 @@ public class Keyboard {
         }
     }
 
-    // TODO Public accessors
+    /**
+     * Checks if a key is currently being pressed.
+     * @param key The keycode of the key to check.
+     * @return Whether the key is pressed or not.
+     */
+    public boolean isKeyPressed(int key) {
+        AtomicBoolean state = keyState.get(key);
+        return state != null && state.get();
+    }
 
 }

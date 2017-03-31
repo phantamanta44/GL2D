@@ -1,5 +1,9 @@
 package io.github.phantamanta44.shlgl.input;
 
+import io.github.phantamanta44.shlgl.util.math.Vector2I;
+import io.github.phantamanta44.shlgl.util.memory.Pooled;
+import org.lwjgl.glfw.GLFW;
+
 /**
  * Represents the mouse cursor and stores position and button data.
  * @author Evan Geng
@@ -7,19 +11,9 @@ package io.github.phantamanta44.shlgl.input;
 public class Cursor {
 
     /**
-     * The left button's state.
+     * The mouse button state bitmask. The rightmost bit is left, followed by right, then middle.
      */
-    private boolean btnLeft;
-
-    /**
-     * The right button's state.
-     */
-    private boolean btnRight;
-
-    /**
-     * The scroll wheel button's state.
-     */
-    private boolean btnMiddle;
+    private int btnState;
 
     /**
      * The cursor's x coordinate.
@@ -35,8 +29,7 @@ public class Cursor {
      * Instantiates the cursor.
      */
     public Cursor() {
-        this.btnLeft = this.btnRight = this.btnMiddle = false;
-        this.posX = this.posY = 0;
+        this.btnState = this.posX = this.posY = 0;
     }
 
     /**
@@ -45,7 +38,14 @@ public class Cursor {
      * @param action The action performed on the button.
      */
     public void updateButtonState(int button, int action) {
-        // TODO Implement
+        switch (action) {
+            case GLFW.GLFW_PRESS:
+                btnState |= (1 << button);
+                break;
+            case GLFW.GLFW_RELEASE:
+                btnState &= ~(1 << button);
+                break;
+        }
     }
 
     /**
@@ -58,8 +58,23 @@ public class Cursor {
         this.posY = posY;
     }
 
-    // TODO Scroll wheel
+    /**
+     * Checks if a mouse button is currently being pressed.
+     * @param button The button to check.
+     * @return Whether the button is pressed or not.
+     */
+    public boolean isButtonPressed(int button) {
+        return (btnState & (1 << button)) != 0;
+    }
 
-    // TODO Public accessors
+    /**
+     * Returns the mouse's current position.
+     * @return The mouse position, as a vector.
+     */
+    public Pooled<Vector2I> getMousePosition() {
+        return Vector2I.of(posX, posY);
+    }
+
+    // TODO Scroll wheel
 
 }

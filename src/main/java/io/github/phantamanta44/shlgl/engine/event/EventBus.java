@@ -1,6 +1,8 @@
 package io.github.phantamanta44.shlgl.engine.event;
 
+import io.github.phantamanta44.shlgl.engine.event.impl.ClickEvent;
 import io.github.phantamanta44.shlgl.engine.event.impl.GameTickEvent;
+import io.github.phantamanta44.shlgl.engine.event.impl.KeyEvent;
 import io.github.phantamanta44.shlgl.engine.event.impl.RenderEvent;
 
 import java.util.HashMap;
@@ -24,6 +26,8 @@ public class EventBus {
         eventStreams = new HashMap<>();
         registerEvent(GameTickEvent.class);
         registerEvent(RenderEvent.class);
+        registerEvent(KeyEvent.class);
+        registerEvent(ClickEvent.class);
     }
 
     /**

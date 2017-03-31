@@ -60,7 +60,7 @@ public class InputHandler {
             public void invoke(long window, double x, double y) {
                 cursor.updateScroll((int)x, (int)y);
             }
-        })
+        });
     }
 
     /**

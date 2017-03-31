@@ -1,5 +1,6 @@
 package io.github.phantamanta44.shlgl.graphics.render;
 
+import io.github.phantamanta44.shlgl.graphics.texture.TextureInfo;
 import io.github.phantamanta44.shlgl.graphics.texture.TextureManager;
 import io.github.phantamanta44.shlgl.util.collection.StackNode;
 import io.github.phantamanta44.shlgl.util.math.Matrix4F;
@@ -65,6 +66,14 @@ public class RenderBuffer {
         this.margins = margins;
         this.kernel = Matrix4F.ident();
         this.kernelStack = new StackNode<>();
+    }
+
+    /**
+     * Binds a texture to be rendered.
+     * @param tex The texture.
+     */
+    public void bind(TextureInfo tex) {
+        TextureManager.bind(tex);
     }
 
     /**
@@ -215,6 +224,7 @@ public class RenderBuffer {
             try (Pooled<Matrix4F> mat = Matrix4F.of(values)) {
                 kernel.get().multiply(mat.get());
             }
+            trans.set(kernel.get().asArray());
         });
     }
 

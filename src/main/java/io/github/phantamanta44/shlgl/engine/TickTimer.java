@@ -47,7 +47,7 @@ public class TickTimer {
      * Retrieves the number of elapsed ticks since the previous call to {@link #getElapsedTicks()}.
      * @return The elapsed tick count.
      */
-    public int getElapsedTicks() {
+    public int getElapsedTicks() { // FIXME callTime is reset before a tick can happen
         if (!enabled)
             throw new IllegalStateException("Timer is not enabled!");
         long time = System.currentTimeMillis();

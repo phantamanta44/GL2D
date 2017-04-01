@@ -73,7 +73,7 @@ public class RenderBuffer {
      * @param tex The texture.
      */
     public void bind(TextureInfo tex) {
-        TextureManager.bind(tex);
+        buffer(() -> TextureManager.bind(tex));
     }
 
     /**
@@ -114,6 +114,7 @@ public class RenderBuffer {
     public void drawRect(float x, float y, float width, float height) {
         float x1 = margins.computeX(x), y1 = margins.computeY(y);
         float x2 = margins.computeX(x + width), y2 = margins.computeY(y + height);
+        System.out.println(String.format("from (%.2f, %.2f) to (%.2f, %.2f)", x1, y1, x2, y2));
         buffer(() -> {
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[]{
                     x2, y1, 1F, 0F,
@@ -157,17 +158,19 @@ public class RenderBuffer {
      * Pushes the current transformation kernel to the stack, storing its state.
      */
     public void pushMatrix() {
-        kernelStack = kernelStack.extend(kernel.get().asArray());
+        buffer(() -> kernelStack = kernelStack.extend(kernel.get().asArray()));
     }
 
     /**
      * Pops the topmost element of the transformation kernel stack and restores the stored state.
      */
     public void popMatrix() {
-        if (kernelStack.hasParent()) {
-            kernel.get().readArray(kernelStack.getValue());
-            kernelStack = kernelStack.getParent();
-        }
+        buffer(() -> {
+            if (kernelStack.hasParent()) {
+                kernel.get().readArray(kernelStack.getValue());
+                kernelStack = kernelStack.getParent();
+            }
+        });
     }
 
     /**
@@ -236,7 +239,7 @@ public class RenderBuffer {
      * @param a The alpha component.
      */
     public void colour4F(float r, float g, float b, float a) {
-        colour.set(r, g, b, a);
+        buffer(() -> colour.set(r, g, b, a));
     }
 
     /**

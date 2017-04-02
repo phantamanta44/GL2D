@@ -1,8 +1,10 @@
 package io.github.phantamanta44.shlgl.graphics.render;
 
+import io.github.phantamanta44.shlgl.SHLGL;
 import io.github.phantamanta44.shlgl.util.math.Vector2I;
 import io.github.phantamanta44.shlgl.util.memory.Pooled;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.system.MemoryStack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -55,6 +57,7 @@ public class Window {
             posX = x;
             posY = y;
         });
+        GLFW.glfwSetWindowCloseCallback(handle, w -> SHLGL.getInstance().shutdown(0));
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer x = stack.mallocInt(1);
             IntBuffer y = stack.mallocInt(1);

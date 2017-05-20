@@ -50,6 +50,14 @@ public class SHLGL {
     }
 
     /**
+     * Checks whether SHLGL is initialized yet.
+     * @return Whether SHLGL is initialized or not.
+     */
+    public static boolean isInitialized() {
+        return INSTANCE != null;
+    }
+
+    /**
      * Retrieves the singleton instance of SHLGL.
      * @return The singleton instance.
      */

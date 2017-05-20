@@ -1,6 +1,7 @@
 package io.github.phantamanta44.shlgl.graphics.texture;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import io.github.phantamanta44.shlgl.SHLGL;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -48,6 +49,8 @@ public class TextureManager {
      * @return The ID of the newly loaded texture.
      */
     private static int load(String path) {
+        if (!SHLGL.isInitialized())
+            throw new IllegalStateException("SHLGL not initialized!");
         try (InputStream stream = TextureManager.class.getClassLoader().getResourceAsStream(path)) {
             PNGDecoder decoder = new PNGDecoder(stream);
             int w = decoder.getWidth(), h = decoder.getHeight();

@@ -80,7 +80,7 @@ public class MarginHandler {
      * @return The corresponding device coordinate.
      */
     public float computeX(float resX) {
-        return resX / resWidth - 1;
+        return 2 * resX / resWidth - 1;
     }
 
     /**
@@ -89,7 +89,7 @@ public class MarginHandler {
      * @return The corresponding device coordinate.
      */
     public float computeY(float resY) {
-        return resY / resHeight - 1;
+        return 2 * resY / resHeight - 1;
     }
 
 }

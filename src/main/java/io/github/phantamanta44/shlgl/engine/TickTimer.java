@@ -19,7 +19,7 @@ public class TickTimer {
     /**
      * The time of the last call to {@link #getElapsedTicks()}.
      */
-    private long callTime;
+    private double callTime;
 
     /**
      * Sets the tickrate.
@@ -51,9 +51,9 @@ public class TickTimer {
         if (!enabled)
             throw new IllegalStateException("Timer is not enabled!");
         long time = System.currentTimeMillis();
-        long elapsed = time - callTime;
-        int ticks = (int)Math.floor((double)(time - callTime) / millisPerTick);
-        callTime = time - (int)Math.floor(elapsed % millisPerTick);
+        double elapsed = time - callTime;
+        int ticks = (int)Math.floor(elapsed / millisPerTick);
+        callTime = time - (elapsed % millisPerTick);
         return ticks;
     }
 

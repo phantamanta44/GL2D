@@ -114,11 +114,10 @@ public class RenderBuffer {
     public void drawRect(float x, float y, float width, float height) {
         float x1 = margins.computeX(x), y1 = margins.computeY(y);
         float x2 = margins.computeX(x + width), y2 = margins.computeY(y + height);
-        System.out.println(String.format("from (%.2f, %.2f) to (%.2f, %.2f)", x1, y1, x2, y2));
         buffer(() -> {
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[]{
-                    x2, y1, 1F, 0F,
                     x1, y1, 0F, 0F,
+                    x2, y1, 1F, 0F,
                     x2, y2, 1F, 1F,
                     x1, y2, 0F, 1F
             }, GL15.GL_STREAM_DRAW);
@@ -254,6 +253,7 @@ public class RenderBuffer {
      * Runs all the buffered actions.
      */
     public void flush() {
+        trans.set(kernel.get().asArray());
         actions.forEach(Runnable::run);
         actions.clear();
         kernel.free();

@@ -1,6 +1,7 @@
 package io.github.phantamanta44.shlgl.graphics.render;
 
 import io.github.phantamanta44.shlgl.util.math.Vector2I;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Handles margin creation to conserve resolution upon window size change.
@@ -29,26 +30,6 @@ public class MarginHandler {
     private float resHeight;
 
     /**
-     * Cached horizontal margin value.
-     */
-    private float halfMarginHor;
-
-    /**
-     * Cached vertical margin value.
-     */
-    private float halfMarginVer;
-
-    /**
-     * Cached horizontal scaling factor.
-     */
-    private float xFactor;
-
-    /**
-     * Cached vertical scaling factor.
-     */
-    private float yFactor;
-
-    /**
      * Updates the cached width and height values.
      * @param winSize The new window size.
      * @param width The new resolution width.
@@ -71,8 +52,9 @@ public class MarginHandler {
      * Recalculates and caches margin values.
      */
     private void calculateMargin() {
-        float kHeightWidth = resWidth / resHeight;
-        float idealWinWidth = winHeight * kHeightWidth;
+        float idealWinWidth = winHeight * resWidth / resHeight;
+        float idealWinHeight = winHeight;
+        float halfMarginHor, halfMarginVer;
         if (Math.abs(winWidth - idealWinWidth) < 0.5F) {
             halfMarginHor = halfMarginVer = 0;
         } else if (winWidth > idealWinWidth) {
@@ -80,11 +62,16 @@ public class MarginHandler {
             halfMarginHor = (winWidth - idealWinWidth) / 2;
         } else {
             halfMarginHor = 0;
-            float idealHeight = winWidth * resHeight / resWidth;
-            halfMarginVer = (winHeight - idealHeight) / 2;
+            idealWinWidth = winWidth;
+            idealWinHeight = winWidth * resHeight / resWidth;
+            halfMarginVer = (winHeight - idealWinHeight) / 2;
         }
-        xFactor = (winWidth - halfMarginHor * 2) / resWidth;
-        yFactor = (winHeight - halfMarginVer * 2) / resHeight;
+        GL11.glViewport(
+                (int)Math.floor(halfMarginHor),
+                (int)Math.floor(halfMarginVer),
+                (int)Math.floor(idealWinWidth),
+                (int)Math.floor(idealWinHeight)
+        );
     }
 
     /**
@@ -93,7 +80,7 @@ public class MarginHandler {
      * @return The corresponding device coordinate.
      */
     public float computeX(float resX) {
-        return (resX * xFactor + halfMarginHor) / winWidth;
+        return resX / resWidth - 1;
     }
 
     /**
@@ -102,7 +89,7 @@ public class MarginHandler {
      * @return The corresponding device coordinate.
      */
     public float computeY(float resY) {
-        return (resY * yFactor + halfMarginVer) / winHeight;
+        return resY / resHeight - 1;
     }
 
 }
